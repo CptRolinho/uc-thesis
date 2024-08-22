@@ -1,0 +1,44 @@
+\section{Escrita do Documento}
+\label{cha:escrita}
+\section{Chapters}
+
+Each chapter has its own file. For example, the \LaTeX{} source of this chapter can be found in \texttt{chapter-1.tex}. A chapter starts with the command
+\begin{quote}
+    \texttt{\textbackslash chapter\{Chapter title\}}
+\end{quote}
+This starts a new page, prints the chapter number and title and adds a link in the table of contents. If the title is very long, it may be desirable to use a shorter version in the page headers and the table of contents. This can be achieved by specifying the short title in brackets:
+\begin{quote}
+    \texttt{\textbackslash chapter[Short title]\{Very long title with many words which could not possibly fit on one line\}}
+\end{quote}
+Unnumbered chapters, such as the preface, can be created with \texttt{\textbackslash chapter*\{Chapter title\}}. Such a chapter will not show up in the table of contents or in the page header. To create a table of contents entry anyway, add
+\begin{quote}
+    \texttt{\textbackslash addcontentsline\{toc\}\{chapter\}\{Chapter title\}}
+\end{quote}
+after the \texttt{\textbackslash chapter} command. To print the chapter title in the page header, add
+\begin{quote}
+    \texttt{\textbackslash setheader\{Chapter title\}}
+\end{quote}
+
+Chapters are subdivided into sections, subsections, subsubsections, and, optionally, paragraphs and subparagraphs. All can have a title, but only sections and subsections are numbered. As with chapters, the numbering can be turned off by using \texttt{\textbackslash section*\{\ldots\}} instead of \texttt{\textbackslash section\{\ldots\}}, and similarly for the subsection.
+\section{\textbackslash section\{\ldots\}}
+\subsection{\textbackslash subsection\{\ldots\}}
+\subsubsection{\textbackslash subsubsection\{\ldots\}}
+\paragraph{\textbackslash paragraph\{\ldots\}}
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+\section{Abreviações e Acrónimos}
+\label{cha:acronimos}
+
+\section{Símbolos}
+\label{cha:simbolos}
+
+\section{Referências}
+\label{cha:referencias}
+
+Testando o tamanho das equações. Esta é inline a \emph{a} $a^2 = b^2 + c^2$
+\begin{equation}
+    V = \frac{A}{B}
+\end{equation}
+
+Novamente $D_n$ e $72.22$ vs 72
+

@@ -1,0 +1,61 @@
+\documentclass[english,phd,fctuc]{uc-thesis}
+
+\import{}{acronyms.tex}
+
+\makenomenclature
+
+\begin{document}
+%% Use Roman numerals for the page numbers of the title pages and table of contents.
+\frontmatter
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+
+\import{}{thesis_info.tex}
+\import{}{nomenclature.tex}
+
+\makecover
+
+\maketitlepage
+
+\makededication
+
+\makeacknowledgement
+
+\makeabstract
+
+\tableofcontents
+
+\cleardoublepage
+
+\listoffigures
+
+\cleardoublepage
+
+\listoftables
+
+\cleardoublepage
+
+\listofacronyms
+
+\printnomenclature
+
+\mainmatter
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
+
+%% Add chapters to be imported
+\fontsize{12}{12}\selectfont
+\import{chapters/}{chapter-1.tex}
+\import{chapters/}{chapter-2.tex}
+
+
+\bibliography{thesis}
+
+
+\appendix
+%% Add appendixes to be imported
+\import{chapters/}{appendixA.tex}
+
+\annex
+%% Add annexes to be imported
+\import{chapters/}{annexA.tex}
+
+\end{document}

@@ -1,0 +1,107 @@
+\chapter{Introdução}
+
+Este documento tem como intenção ser um exemplo do modelo para relatórios e teses do \ac{DEM-UC}, assim como ser uma breve introdução ao seu uso.
+
+Apesar do objetivo deste documento não ser uma introdução aprofundada ao uso do \LaTeX{} em si, servirá como referência para as opções e códigos preparados para a realização deste documento. Serve também, como guia de boas práticas para a redação em \LaTeX{}.
+
+\section{Estrutura do Modelo}
+
+Como um relatório, e especialmente uma tese, pode ser um documento substancial, é conveniente dividi-lo em componentes menores. Neste modelo, o ficheiro \texttt{thesis.tex}, é o ficheiro mestre do documento, e onde se encontram os principais comandos que o estruturam. O ficheiro mestre começa com
+\begin{quote}
+    \texttt{\textbackslash documentclass[portuguese]\{demuc-thesis\}}
+\end{quote}
+que carrega a classe do modelo de relatório, ou seja, o código que orienta os comandos e o seu comportamento neste modelo. A classe do modelo tem como base a classe \LaTeX{} \texttt{book}, e encontra-se no ficheiro \texttt{demuc-thesis.cls}. A sua edição é apenas recomendada a utilizadores mais avançados.
+
+Na sua versão atual, esta classe aceita duas opções próprias, dadas entre [ ]. \texttt{portuguese} e \texttt{english} que definem a língua principal em que irão redigir o documento. Aceita também qualquer opção que possa ser usada na classe \texttt{book}. Para passar múltiplas opções, estas separam-se por vírgula. Como exemplo, a opção \texttt{draft} irá permitir compilar o documento rapidamente, abdicando da inclusão de gráficos -- é uma opção normalmente utilizada para identificar problemas no código.
+
+\cite{Geim2001}
+
+A secção antes de \texttt{\textbackslash begin\{document\}}, é denominada por preâmbulo. É aqui que poderão adicionar código personalizado que deve ser corrido antes do documento se inicializar. Encontrarão o comando
+\begin{quote}
+    \texttt{\textbackslash import\{/\}\{acronyms.tex\}}
+\end{quote}
+que carrega o ficheiro \texttt{acronyms.tex} para o documento. Este comando demonstra como se carregam ficheiros para o documento, através do pacote \texttt{import}. No primeiro par de chavetas é dada a localização do ficheiro que se pretende carregar, e no segundo par de chavetas o nome do ficheiro. O ficheiro aqui carregado tem como propósito listar as abreviações e acrónimos que vão usar no corpo do documento, no \cref{cha:acronimos} podem saber mais sobre este assunto.
+
+Os conteúdos do documento são incluídos entre os comandos \texttt{\textbackslash begin\{document\}} e \texttt{\textbackslash end\{document\}}, que se dividem em três partes:
+\begin{enumerate}
+\item\texttt{\textbackslash frontmatter}, que usa numeração romana para os números de página e que é usada para incluir as páginas de título, resumos e listas de conteúdos;
+\item\texttt{\textbackslash mainmatter}, que usa numeração árabe para os números de página e onde incluirão o conteúdo do vosso relatório ou tese;
+\item\texttt{\textbackslash appendix} e \texttt{\textbackslash annex}, que serve para incluir anexos e apêndices e usa letras para os enumerar, começando com `A'.
+\end{enumerate}
+
+\subsection{\texttt{\textbackslash frontmatter}}
+
+O \texttt{\textbackslash frontmatter} começa com o carregamento de ficheiros adicionais. Um deles é o ficheiro \texttt{thesis\_info.tex}, onde poderão encontrar os comandos e introduzir os dados referentes às informações do documento. Estes campos são explorados na \cref{cha:docinfo}, e fornecem os dados necessários para produzir a Capa, a Página de Título, a Dedicatória, os Agradecimentos, o Resumo e o Abstract, que é conseguido através dos comandos
+\begin{quote}
+    \texttt{\textbackslash makecover}
+
+    \texttt{\textbackslash maketitlepage}
+
+    \texttt{\textbackslash makededication}
+
+    \texttt{\textbackslash makeacknowledgement}
+
+    \texttt{\textbackslash makeabstract}
+\end{quote}
+
+De seguida temos os comandos que constroem as listas de conteúdos de forma automática, permitindo listas de conteúdos, figuras, tabelas, abreviações e acrónimos e símbolos. Sobre os últimos dois podem consultar os \cref{cha:acronimos,cha:simbolos}.
+
+\begin{quote}
+    \texttt{\textbackslash tableofcontents}
+
+    \texttt{\textbackslash listoffigures}
+
+    \texttt{\textbackslash listoftables}
+
+    \texttt{\textbackslash listofacronyms}
+
+    \texttt{\textbackslash printnomenclature}
+\end{quote}
+
+Os comandos \texttt{\textbackslash cleardoublepage} servem para garantir que a separação destes conteúdos funcione de forma a começarem em páginas ímpares.
+
+\subsection{\texttt{\textbackslash mainmatter}}
+No \texttt{\textbackslash mainmatter} realiza-se a importação do corpo do documento através de comandos como
+\begin{quote}
+    \texttt{\textbackslash import\{chapters/\}\{chapter-1.tex\}}
+\end{quote}
+que importa o ficheiro que inclui esta introdução. Na \cref{sec:escrita} abordamos a escrita do corpo do documento. Cada ficheiro que escreverem deve ser adicionado aqui, pela ordem que desejarem que apareça no corpo.
+
+Após a inclusão do corpo do documento, a Bibliografia é gerada automaticamente com
+\begin{quote}
+    \texttt{\textbackslash bibliography\{thesis\}}
+\end{quote}
+através do ficheiro \texttt{thesis.bib}. No \cref{cha:referencias} falamos sobre como trabalhar com as referências e a gestão da bibliografia.
+
+\subsection{\texttt{\textbackslash appendix} e \texttt{\textbackslash annex}}
+
+
+\section{Informações sobre o Documento}
+\label{sec:docinfo}
+\begin{itemize}
+    \item \texttt{\textbackslash title\{Título\}\{Subtítulo\}}\\
+    Este comando especifica o título e o subtítulo do documento na língua principal.
+    \item \texttt{\textbackslash alttitle\{Título\}\{Subtítulo\}}\\
+    Este comando especifica o título e o subtítulo do documento na língua secundária.
+    \item \texttt{\textbackslash graduation\{Grau\}\{Área\}\{Especialização\}\{Curso\}} -- Informações sobre o grau, a área, a especialização e o nome completo do curso;
+    \item \texttt{\textbackslash affiliation\{<Unidade Orgânica\}} -- A quem o documento é apresentado, nome da unidade orgânica da Universidade;
+    \item \texttt{\textbackslash supervisor\{Título\}\{Cargo\}\{Nome\}} -- Título, cargo e nome completo do orientador;
+    \item \texttt{\textbackslash cosupervisor\{Título\}\{Cargo\}\{Nome\}} -- Título, cargo e nome completo do coorientador;
+    \item \texttt{\textbackslash president\{Título\}\{Cargo\}\{Nome\}} -- Título, cargo e nome completo do presidente do júri;
+    \item \texttt{\textbackslash vowel\{Título\}\{Cargo\}\{Nome\}} -- Título, cargo e nome completo do vogal do júri;
+    \item \texttt{\textbackslash thesisdate\{Mês\}\{Ano\}} -- Mês e ano em que o documento será defendido;
+    \item \texttt{\textbackslash institution\{Nome\}\{Logo\}} -- Nome e logótipo da instituição em colaboração;
+    \item \texttt{\textbackslash coinstitution\{Nome\}\{Logo\}} -- Nome e logótipo de uma segunda instituição em colaboração;
+    \item \texttt{\textbackslash dedication\{Texto\}} -- Dedicatória;
+    \item \texttt{\textbackslash acknowledgement\{Texto\}} -- Agradecimentos;
+    \item \texttt{\textbackslash thesisabstract\{Principal\}\{Secundária\}} -- Texto para os resumos nas línguas principal e secundária;
+    \item \texttt{\textbackslash thesiskeywords\{Principal\}\{Secundária\}} -- Palavras-chave nas línguas principal e secundária;
+\end{itemize}
+Os campos dos comandos encontram-se já pré-preenchidos com exemplos. De notar que se alterarem a língua em que estão a redigir o documento deverão alterar a ordem dos campos para que o texto condiga com a língua.
+
+Caso algum campo não seja necessário devem simplesmente apagar o conteúdo dentro do campo, como por exemplo \texttt{\textbackslash title\{Título\}\{\}} quando o subtítulo não existe.
+
+Caso não necessitem de algum comando, como não existir coorientador ou colaboração de instituições, devem comentar o comando correspondente. Comentar código em \LaTeX é realizado através do uso de \% no início da linha ou a partir de onde querem comentar. No Overleaf podem usar o atalho \texttt{ctrl+/}.
+\begin{quote}
+    \texttt{\% \textbackslash cosupervisor\{Título\}\{Cargo\}\{Nome\}}
+\end{quote}
