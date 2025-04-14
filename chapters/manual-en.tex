@@ -1,0 +1,81 @@
+\chapter{User Manual}
+This document provides guidance on how to use the \texttt{uc-thesis} class for the University of Coimbra thesis template. It covers the main features introduced as of version~\textbf{0.8.0}.
+\section{User Guide}
+\subsection{Document Class Setup}
+
+Begin your thesis with the class declaration:
+
+\begin{verbatim}
+    \documentclass[main=english,alt=portuguese,phd,fctuc]{uc-thesis}
+\end{verbatim}
+
+Available class options:
+
+\begin{itemize}
+    \item \texttt{msc} or \texttt{phd} — to specify the degree level.
+    \item \texttt{english} or \texttt{portuguese} — to define the main language of the document.
+\end{itemize}
+
+The language setting automatically adjusts key terms and content via \texttt{babel}.
+
+\subsection{Declaring Supervisors}
+
+Declare supervisors using the unified \verb|\supervisor| command:
+\begin{verbatim}
+    \supervisor{<title>}{<position>}{<name>}
+\end{verbatim}
+
+You can define any number of supervisors. For example:
+\begin{verbatim}
+    \supervisor{Professor Doctor}{Full Professor}{John Doe}
+    \supervisor{Professor}{Invited Assistante Professor}{Jane Smith}
+\end{verbatim}
+
+To indicate which supervisor is part of the jury, use:
+\begin{verbatim}
+    \supervisorinjury{<number>}
+\end{verbatim}
+
+This selects the $n$-th supervisor (in declaration order) for jury-related sections.
+
+\subsection{Declaring Institutions}
+
+Institutions are declared using:
+\begin{verbatim}
+    \institution{<name>}{<logo>}
+\end{verbatim}
+
+Example:
+\begin{verbatim}
+    \institution{University of Coimbra}{\includegraphics[width=2cm]
+    {institutional/UC_V_Capa.eps}}
+    \institution{MIT}{\includegraphics[width=1.5cm]
+    {institutional/MIT_logo.pdf}}
+\end{verbatim}
+
+Logos will be printed above the institution names on the title page, and the layout adapts to support any number of institutions.
+
+\section{Changelog}
+\subsection{Version 0.8.0}
+
+\begin{itemize}
+\item \textbf{Added a changelog system:}\\ This file! A dedicated \texttt{.tex} file has been introduced to track versioned changes to the class, embedded directly into the documentation.
+  
+\item \textbf{Supervisor system restructured:}\\  
+The previous \texttt{\textbackslash supervisor} and \texttt{\textbackslash cosupervisor} commands have been unified into a single command \texttt{\textbackslash supervisor\{<title>\}\{<position>\}\{<name>\}}, allowing flexible declaration of any number of supervisors. Internal macros are now generated dynamically, and supervisor-related content is printed automatically where relevant.
+
+\item \textbf{New jury selection command:}\\  
+Introduced \texttt{\textbackslash supervisorinjury\{<number>\}} to mark one of the declared supervisors as the one attending the jury. This simplifies jury-specific content management in the title and front matter.
+
+\item \textbf{Institution command generalized:}\\  
+The previous \texttt{\textbackslash institution} and \texttt{\textbackslash coinstitution} system has been unified into a single \texttt{\textbackslash institution\{<name>\}\{<logo>\}} command. Any number of institutions can now be declared, and are printed automatically on the title page, with logos arranged side by side.
+
+\item \textbf{Cover page updated:}\\  
+The cover page now automatically prints all declared supervisors within the scope sentence. Multiple supervisors are now supported and rendered correctly.
+
+\item \textbf{Title page updated:}\\  
+The title page now automatically prints all declared supervisors and institutions in a structured, responsive layout. Multiple institutions and supervisors are now supported and rendered correctly.
+
+\item \textbf{Degree level localization fixed:}\\  
+The \texttt{msc} and \texttt{phd} class options now properly affect translated content via language-dependent keys and related macros. Translations are handled through\\ \texttt{\textbackslash addto\textbackslash captions<language>} blocks, supporting multilingual output.
+\end{itemize}

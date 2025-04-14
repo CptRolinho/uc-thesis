@@ -1,4 +1,7 @@
-\documentclass[english,phd,fctuc]{uc-thesis}
+% \documentclass[main=english,alt=portuguese,phd,fctuc]{uc-thesis}
+\documentclass[main=portuguese,alt=english,msc,fctuc]{uc-thesis}
+
+\addbibresource{thesis.bib}
 
 \import{}{acronyms.tex}
 
@@ -9,7 +12,7 @@
 \frontmatter
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
 
-\import{}{thesis_info.tex}
+\import{}{thesis-info.tex}
 \import{}{nomenclature.tex}
 
 \makecover
@@ -43,19 +46,23 @@
 
 %% Add chapters to be imported
 \fontsize{12}{12}\selectfont
-\import{chapters/}{chapter-1.tex}
-\import{chapters/}{chapter-2.tex}
+\input{chapters/chapter-1}
+\input{chapters/chapter-2}
 
 
-\bibliography{thesis}
+% \bibliography{thesis} % old natbib command
+% Add bibliography to TOC
+\addcontentsline{toc}{chapter}{\bibname}
+\printbibliography
 
 
 \appendix
 %% Add appendixes to be imported
-\import{chapters/}{appendixA.tex}
+\input{chapters/appendixA.tex}
 
-\annex
+% \annex % not currently using
 %% Add annexes to be imported
-\import{chapters/}{annexA.tex}
+\input{chapters/annexA}
+\input{chapters/manual-en}
 
 \end{document}

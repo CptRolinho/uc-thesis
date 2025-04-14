@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2024/07/23 v0.7.0 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2025/04/14 v0.8.0 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -20,6 +20,7 @@
 % Thesis Level
 \newif\if@msc
 \newif\if@phd
+
 \DeclareOption{msc}{\@msctrue\@phdfalse}
 \DeclareOption{phd}{\@mscfalse\@phdtrue}
 
@@ -64,6 +65,17 @@
 % Load the book class
 \LoadClass[12pt]{book}
 
+\AtBeginDocument{%
+  \if@msc
+    \def\@degree{\mscdegree}%
+    \def\@thesis{\mscthesis}%
+  \fi
+  \if@phd
+    \def\@degree{\phddegree}%
+    \def\@thesis{\phdthesis}%
+  \fi
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% Required Packages %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -100,8 +112,10 @@
 \fi\fi
 
 % \RequirePackage{metalogo} % Provides logos for MetaFont and LaTeX logos
-\RequirePackage[numbers,sort&compress]{natbib} % Manages bibliography with numeric citations (e.g., [1,2,3])
-\bibliographystyle{unsrtnat} % Sets bibliography style to numeric and unsorted
+% \RequirePackage[numbers,sort&compress]{natbib} % Manages bibliography with numeric citations (e.g., [1,2,3])
+% \bibliographystyle{unsrtnat} % Sets bibliography style to numeric and unsorted
+\RequirePackage[backend=biber, style=numeric, sorting=none, natbib=true, maxcitenames = 2]{biblatex}
+
 \RequirePackage{url} % Provides URL formatting and handling
 \RequirePackage{tikz} % Provides a powerful tool for creating graphics programmatically
 \RequirePackage{titlesec} % Customizes section headings and title formats
@@ -128,8 +142,9 @@
 \RequirePackage{csquotes} % Provides advanced quotation facilities and consistent formatting for quotations, integrates well with biblatex.
 \RequirePackage{derivative} % Simplifies notation for derivatives (partial, total, directional) in mathematical documents.
 \RequirePackage{caption} % Allows customization of captions for figures and tables, including formatting and placement options.
-\RequirePackage[subcaption] % Enables the creation of subfigures and subtables, allowing for labeled and referenced sub-entities within a main figure or table.
+\RequirePackage{subcaption} % Enables the creation of subfigures and subtables, allowing for labeled and referenced sub-entities within a main figure or table.
 \RequirePackage[casesstyle]{cases} % Provides a way to format piecewise functions with cases, using the 'casesstyle' option for neat formatting.
+
 \captionsetup{justification=centering} % Centers the captions for figures and tables, providing a more uniform appearance.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,26 +238,76 @@
     \def\@author{#1}%
 }
 
-%% Define the masters command.
+%% Define the graduation command.
 \newcommand*\graduation[3]{%
-    % \def\@degree{#1}%
     \def\@area{#1}%
     \def\@speciality{#2}%
     \def\@longdegree{#3}%
 }
 
-%% Define the supervisor command.
-\newcommand*\supervisor[3]{%
-    \def\@supervisortitle{#1}%
-    \def\@supervisorposition{#2}%
-    \def\@supervisor{#3}%
+%% Supervisors related commands
+\newcount\@supervisorcount
+\@supervisorcount=0
+
+\newcommand{\supervisor}[3]{%
+  \advance\@supervisorcount by 1
+  \expandafter\gdef\csname @supervisortitle\romannumeral\@supervisorcount\endcsname{#1}%
+  \expandafter\gdef\csname @supervisorposition\romannumeral\@supervisorcount\endcsname{#2}%
+  \expandafter\gdef\csname @supervisorname\romannumeral\@supervisorcount\endcsname{#3}%
 }
 
-%% Define the cosupervisor command.
-\newcommand*\cosupervisor[3]{%
-    \def\@cosupervisortitle{#1}%
-    \def\@cosupervisorposition{#2}%
-    \def\@cosupervisor{#3}%
+% Command to get total number of supervisors
+\newcommand{\supervisorcount}{\number\@supervisorcount}
+
+% Default 'and' in English, later redefined with babel
+\def\supervisorand{and}
+
+% Command to print supervisors
+\newcommand{\printsupervisors}{%
+  \ifnum\@supervisorcount=1
+    \csname @supervisortitle\romannumeral1\endcsname~%
+    \csname @supervisorname\romannumeral1\endcsname%
+  \else
+    \@tempcnta=1
+    \loop
+      \csname @supervisortitle\romannumeral\the\@tempcnta\endcsname~%
+      \csname @supervisorname\romannumeral\the\@tempcnta\endcsname%
+      \advance\@tempcnta by 1
+      \ifnum\@tempcnta<\@supervisorcount
+        ,\ 
+    \repeat
+    \ifnum\@tempcnta=\@supervisorcount
+      \ \supervisorand\ %
+      \csname @supervisortitle\romannumeral\the\@tempcnta\endcsname~%
+      \csname @supervisorname\romannumeral\the\@tempcnta\endcsname%
+    \fi
+  \fi
+}
+
+\newcommand{\printsupervisorslines}{%
+  \ifnum\@supervisorcount=1
+    \csname @supervisortitle\romannumeral1\endcsname~%
+    \csname @supervisorname\romannumeral1\endcsname\\%
+  \else
+    \@tempcnta=1
+    \loop
+      \csname @supervisortitle\romannumeral\the\@tempcnta\endcsname~%
+      \csname @supervisorname\romannumeral\the\@tempcnta\endcsname\\%
+      \advance\@tempcnta by 1
+      \ifnum\@tempcnta<\@supervisorcount
+    \repeat
+    \ifnum\@tempcnta=\@supervisorcount
+      \csname @supervisortitle\romannumeral\the\@tempcnta\endcsname~%
+      \csname @supervisorname\romannumeral\the\@tempcnta\endcsname\\%
+    \fi
+  \fi
+}
+
+% Command to select which supervisor goes to the jury
+\newcommand{\supervisorinjury}[1]{%
+  \edef\@supervisorinjurytitle{\csname @supervisortitle\romannumeral#1\endcsname}%
+  \edef\@supervisorinjuryposition{\csname @supervisorposition\romannumeral#1\endcsname}%
+  \edef\@supervisorinjuryname{\csname @supervisorname\romannumeral#1\endcsname}%
 }
 
 %% Define the president of the jury command.
@@ -268,16 +333,49 @@
     \def\@year{#2}%
 }
 
-%% Define the first institution command.
-\newcommand\institution[2]{%
-    \def\@institution{#1}%
-    \def\@institutionlogo{#2}%
+%% Define the institutions command.
+\newcount\@institutioncount
+\@institutioncount=0
+
+\newcommand{\institution}[2]{%
+  \global\advance\@institutioncount by 1
+  \expandafter\gdef\csname @institutionname\romannumeral\@institutioncount\endcsname{#1}%
+  \expandafter\gdef\csname @institutionlogo\romannumeral\@institutioncount\endcsname{#2}%
 }
 
-%% Define the second institution command.
-\newcommand\coinstitution[2]{%
-    \def\@coinstitution{#1}%
-    \def\@coinstitutionlogo{#2}%
+\newcommand{\printinstitutions}{%
+  \ifnum\@institutioncount=1
+    \par\noindent
+    {\fontsize{12pt}{12pt}\selectfont\textbf{\institutioncaption}}\par\smallskip
+    \hrule\vspace{1em}
+    \noindent
+    \begin{minipage}[t]{0.3\textwidth}
+      \centering
+      \csname @institutionlogo\romannumeral1\endcsname\\[0.5em]
+      \textbf{\csname @institutionname\romannumeral1\endcsname}
+    \end{minipage}%
+  \else
+    \par\noindent
+    {\fontsize{12pt}{12pt}\selectfont\textbf{\institutioncaption}}\par\smallskip
+    \hrule\vspace{1em}
+    \noindent
+    \@tempcnta=1
+    \loop
+      \begin{minipage}[t]{0.3\textwidth}
+        \centering
+        \csname @institutionlogo\romannumeral\the\@tempcnta\endcsname\\[0.5em]
+        \textbf{\csname @institutionname\romannumeral\the\@tempcnta\endcsname}
+      \end{minipage}%
+      \ifnum\@tempcnta<\@institutioncount
+        \hfill
+      \fi
+      \advance\@tempcnta by 1
+    \ifnum\@tempcnta>\@institutioncount
+      \let\@tempdone\relax
+    \else
+      \let\@tempdone\repeat
+    \fi
+    \@tempdone
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -300,10 +398,16 @@
     \def\cosupervisorcaption{Supervisors}%
     \def\titlepagecaption{Title Page}%
     \def\vowelcaption{Vowel}%
-    \def\degree{Master}%
-    \def\thesis{Dissertation}%
-    \def\keythesiscover{\thesis\ within the scope of the \@longdegree\ supervised by \@supervisortitle\ \@supervisor\ and presented to \@affiliation}%
-    \def\keythesistitle{Submitted in Partial Fulfilment of the Requirements for the Degree of \degree\ in \@area\ in the speciality of \@speciality}%
+    \def\mscdegree{Master}%
+    \def\mscthesis{Dissertation}%
+    \def\phddegree{Doctor}%    
+    \def\phdthesis{Thesis}%
+    \def\supervisorand{and}%
+    \def\keythesiscover{\@thesis\ within the scope of the \@longdegree\ supervised by \printsupervisors, and presented to \@affiliation}%
+    \def\keythesisscope{\@thesis\ within the scope of the \@longdegree\ supervised by \@supervisortitle\ \@supervisor}%
+    \def\keythesiscosupervisor{and \@cosupervisortitle\ \@cosupervisor,}%
+    \def\keythesisaffiliation{and presented to \@affiliation}%
+    \def\keythesistitle{Submitted in Partial Fulfilment of the Requirements for the Degree of \@degree\ in \@area\ in the speciality of \@speciality}%
     \def\monthyear{\@month\ of \@year}%
 }
 
@@ -323,10 +427,16 @@
     \def\cosupervisorcaption{Orientadores}%
     \def\titlepagecaption{Página de Título}%
     \def\vowelcaption{Vogal}%
-    \def\degree{Mestre}%
-    \def\thesis{Dissertação}%
-    \def\keythesiscover{\thesis\ no âmbito do \@longdegree\ orientado por \@supervisortitle\ \@supervisor\ e apresentada \@affiliation}%
-    \def\keythesistitle{\thesis\ apresentada para a obtenção do grau de \degree\ em \@area\ na Especialidade de \@speciality}%
+    \def\mscdegree{Mestre}%
+    \def\mscthesis{Dissertação}%
+    \def\phddegree{Doutor}%    
+    \def\phdthesis{Tese}%
+    \def\supervisorand{e}%
+    \def\keythesiscover{\csname @thesis\endcsname\ no âmbito do \@longdegree\ orientado por \printsupervisors, e apresentada \@affiliation}%
+    \def\keythesisscope{\@thesis\ no âmbito do \@longdegree\ orientado por \@supervisortitle\ \@supervisor}%
+    \def\keythesiscosupervisor{e \@cosupervisortitle\ \@cosupervisor,}%
+    \def\keythesisaffiliation{e apresentada \@affiliation}%
+    \def\keythesistitle{\@thesis\ apresentada para a obtenção do grau de \@degree\ em \@area\ na Especialidade de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -346,10 +456,16 @@
     \def\cosupervisorcaption{Supervisores}%
     \def\titlepagecaption{Página de Título}%
     \def\vowelcaption{Vocal}%
-    \def\degree{Máster}%
-    \def\thesis{Tesis}%
-    \def\keythesiscover{\thesis\ en el marco del \@longdegree\ supervisada por \@supervisortitle\ \@supervisor\ y presentada a \@affiliation}%
-    \def\keythesistitle{Presentada para la obtención del título de \degree\ en \@area\ en la especialidad de \@speciality}%
+    \def\mscdegree{Máster}%
+    \def\mscthesis{Trabajo de Fin de Máster}%
+    \def\phddegree{Doctor}%    
+    \def\phdthesis{Tesis}%
+    \def\supervisorand{y}%
+    \def\keythesiscover{\@thesis\ en el marco del \@longdegree\ supervisada por \printsupervisors, y presentada a \@affiliation}%
+    \def\keythesisscope{\@thesis\ en el marco del \@longdegree\ supervisada por \@supervisortitle\ \@supervisor}%
+    \def\keythesiscosupervisor{y \@cosupervisortitle\ \@cosupervisor,}%
+    \def\keythesisaffiliation{y presentada a \@affiliation}%
+    \def\keythesistitle{Presentada para la obtención del título de \@degree\ en \@area\ en la especialidad de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -369,10 +485,16 @@
     \def\cosupervisorcaption{Directeurs}%
     \def\titlepagecaption{Page de Titre}%
     \def\vowelcaption{Membre du Jury}%
-    \def\degree{Maîtrise}%
-    \def\thesis{Mémoire}%
-    \def\keythesiscover{\thesis\ dans le cadre du \@longdegree\ supervisé par \@supervisortitle\ \@supervisor\ et présenté à \@affiliation}%
-    \def\keythesistitle{Soumis en vue de l’obtention du diplôme de \degree\ en \@area\ dans la spécialité de \@speciality}%
+    \def\mscdegree{Master}%
+    \def\mscthesis{Mémoire}%
+    \def\phddegree{Docteur}%    
+    \def\phdthesis{Thèse}%
+    \def\supervisorand{et}%
+    \def\keythesiscover{\@thesis\ dans le cadre du \@longdegree\ supervisé par \printsupervisors, et présenté à \@affiliation}%
+    \def\keythesisscope{\@thesis\ dans le cadre du \@longdegree\ supervisé par \@supervisortitle\ \@supervisor}%
+    \def\keythesiscosupervisor{et \@cosupervisortitle\ \@cosupervisor,}%
+    \def\keythesisaffiliation{et présenté à \@affiliation}%
+    \def\keythesistitle{Soumis en vue de l’obtention du diplôme de \@degree\ en \@area\ dans la spécialité de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -522,36 +644,37 @@
 \renewcommand*\labelitemiv{\color{title}\textperiodcentered}
 
 
-% %% Appendix
-\renewcommand\appendix{\par
-    \setcounter{chapter}{0}%
-    \setcounter{section}{0}%
-    \renewcommand*{\theHsection}{\thesection}%
-    \renewcommand*{\theHchapter}{\thechapter}%
-    \gdef\@chapapp{\appendixname}%
-    \gdef\thechapter{\appendixname\ \@Alph\c@chapter}%
-    \titleformat{\chapter}
-    {}% format
-    {\fontsize{18pt}{18pt}\bfseries \thechapter.\ }% label
-    {0pt}% sep
-    {\fontsize{18pt}{18pt}\bfseries\color{title}}% before
-    \dottedcontents{chapter}[7.5em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{6.5em}{0pc}%
-}
-% %% Annex
-\newcommand\annex{\par
-    \setcounter{chapter}{0}%
-    \setcounter{section}{0}%
-    \renewcommand*{\theHsection}{\thesection}%
-    \renewcommand*{\theHchapter}{\thechapter}%
-    \gdef\@chapapp{\annexcaption}%
-    \gdef\thechapter{\annexcaption\ \@Alph\c@chapter}%
-    \titleformat{\chapter}
-    {}% format
-    {\fontsize{18pt}{18pt}\bfseries \thechapter.\ }% label
-    {0pt}% sep
-    {\fontsize{18pt}{18pt}\bfseries\color{title}}% before
-    \dottedcontents{chapter}[5.75em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{5em}{0pc}
-}
+%% Appendix
+% \renewcommand\appendix{\par
+%     \setcounter{chapter}{0}%
+%     \setcounter{section}{0}%
+%     \renewcommand*{\theHsection}{\thesection}%
+%     \renewcommand*{\theHchapter}{\thechapter}%
+%     \gdef\@chapapp{\appendixname}%
+%     \gdef\thechapter{\@Alph\c@chapter}%
+%     \titleformat{\chapter}
+%     {}% format
+%     {\fontsize{18pt}{18pt}\bfseries \appendixname\ \thechapter.\ }% label
+%     {0pt}% sep
+%     {\fontsize{18pt}{18pt}\bfseries\color{title}}% before
+%     \dottedcontents{chapter}[6.55em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{6.5em}{0pc}%
+%     \dottedcontents{section}[8.35em]{\titlefont}{6.75em}{8pt}%
+% }
+%% Annex
+% \newcommand\annex{\par
+%     \setcounter{chapter}{0}%
+%     \setcounter{section}{0}%
+%     \renewcommand*{\theHsection}{\thesection}%
+%     \renewcommand*{\theHchapter}{\thechapter}%
+%     \gdef\@chapapp{\annexcaption}%
+%     \gdef\thechapter{\annexcaption\ \@Alph\c@chapter}%
+%     \titleformat{\chapter}
+%     {}% format
+%     {\fontsize{18pt}{18pt}\bfseries \thechapter.\ }% label
+%     {0pt}% sep
+%     {\fontsize{18pt}{18pt}\bfseries\color{title}}% before
+%     \dottedcontents{chapter}[5.05em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{5em}{0pc}
+% }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Cover %%%%%%%%%%%%%%%%%%%%%%
@@ -603,51 +726,30 @@
     \newgeometry{top=2cm,bottom=1cm,inner=3cm,outer=2cm}%
     \setlength{\parindent}{0pt}
     \includegraphics[width=\textwidth]{\@faculty}\\[2\baselineskip]
+    \vfill
     \fontsize{20pt}{20pt}\textbf{\@title}\\
     \keythesistitle\\[1.5\baselineskip]
     \fontsize{16pt}{16pt}\textbf{\@alttitle}\\[1\baselineskip]
     \fontsize{12pt}{12pt}\textbf{\authorcaption}\\
     \fontsize{16pt}{16pt}\textbf{\@author}\\
-    
-    \ifx\@cosupervisor\undefined
-        \fontsize{12pt}{12pt}\textbf{\supervisorcaption}\\
-        \fontsize{16pt}{16pt}\textbf{\@supervisor}\\
-    \else
-        \fontsize{12pt}{12pt}\textbf{\cosupervisorcaption}\\
-        \fontsize{16pt}{16pt}\textbf{\@supervisor}\\
-        \fontsize{16pt}{16pt}\textbf{\@cosupervisor}\\
-    \fi
+
+    \fontsize{12pt}{12pt}\textbf{\ifnum\@supervisorcount>1\cosupervisorcaption\else\supervisorcaption\fi}\\
+    {\fontsize{16pt}{16pt}\selectfont\bfseries\printsupervisorslines}
     
     \fontsize{12pt}{12pt}\textbf{\jurycaption}
     \begin{table}[h]
     \begin{tabu} to \textwidth {@{} X[l] X[5,l] @{}}
     \multirow{2}{*}{\textbf{\presidentcaption}} & \textbf{\@presidenttitle}\ \fontsize{14pt}{14pt}\textbf{\@president} \\
         & \textbf{\@presidentposition} \\[5pt]
-    \multirow{2}{*}{\textbf{\supervisorcaption}} & \textbf{\@supervisortitle}\ \fontsize{14pt}{14pt}\textbf{\@supervisor} \\
-        & \textbf{\@supervisorposition} \\[5pt]
+    \multirow{2}{*}{\textbf{\supervisorcaption}} & \textbf{\@supervisorinjurytitle}\ \fontsize{14pt}{14pt}\textbf{\@supervisorinjuryname} \\
+        & \textbf{\@supervisorinjuryposition} \\[5pt]
     \multirow{2}{*}{\textbf{\vowelcaption}} & \textbf{\@voweltitle}\ \fontsize{14pt}{14pt}\textbf{\@vowel} \\
         & \textbf{\@vowelposition}
     \end{tabu}
     \end{table}\\[\baselineskip]
     
-    \ifx\@institution\undefined
-    \else
-        \ifx\@coinstitution\undefined
-        \fontsize{12pt}{12pt}\textbf{\institutioncaption} \hrule
-        \begin{table}[h]
-            \begin{tabu} to \textwidth {@{} *{2}{X[m,c]} @{}}
-                \@institutionlogo & \textbf{\@institution}
-            \end{tabu}
-        \end{table}
-        \else
-        \fontsize{12pt}{12pt}\textbf{\institutioncaption} \hrule
-        \begin{table}[h]
-            \begin{tabu} to \textwidth {@{} *{5}{X[m,c]} @{}}
-                \@institutionlogo & \textbf{\@institution} & & \@coinstitutionlogo & \textbf{\@coinstitution}
-            \end{tabu}
-        \end{table}
-        \fi
-    \fi
+    \vfill
+    \printinstitutions
     
     \vfill
     \fontsize{14pt}{14pt}\textbf{Coimbra, \@month, \@year}
