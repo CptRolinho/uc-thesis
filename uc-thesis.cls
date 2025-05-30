@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2025/04/14 v0.8.0 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2025/05/30 v0.8.1 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -344,38 +344,36 @@
 }
 
 \newcommand{\printinstitutions}{%
-  \ifnum\@institutioncount=1
+  \ifnum\@institutioncount>0
     \par\noindent
     {\fontsize{12pt}{12pt}\selectfont\textbf{\institutioncaption}}\par\smallskip
     \hrule\vspace{1em}
     \noindent
-    \begin{minipage}[t]{0.3\textwidth}
-      \centering
-      \csname @institutionlogo\romannumeral1\endcsname\\[0.5em]
-      \textbf{\csname @institutionname\romannumeral1\endcsname}
-    \end{minipage}%
-  \else
-    \par\noindent
-    {\fontsize{12pt}{12pt}\selectfont\textbf{\institutioncaption}}\par\smallskip
-    \hrule\vspace{1em}
-    \noindent
-    \@tempcnta=1
-    \loop
+    \ifnum\@institutioncount=1
       \begin{minipage}[t]{0.3\textwidth}
         \centering
-        \csname @institutionlogo\romannumeral\the\@tempcnta\endcsname\\[0.5em]
-        \textbf{\csname @institutionname\romannumeral\the\@tempcnta\endcsname}
+        \csname @institutionlogo\romannumeral1\endcsname\\[0.5em]
+        \textbf{\csname @institutionname\romannumeral1\endcsname}
       \end{minipage}%
-      \ifnum\@tempcnta<\@institutioncount
-        \hfill
-      \fi
-      \advance\@tempcnta by 1
-    \ifnum\@tempcnta>\@institutioncount
-      \let\@tempdone\relax
     \else
-      \let\@tempdone\repeat
+      \@tempcnta=1
+      \loop
+        \begin{minipage}[t]{0.3\textwidth}
+          \centering
+          \csname @institutionlogo\romannumeral\the\@tempcnta\endcsname\\[0.5em]
+          \textbf{\csname @institutionname\romannumeral\the\@tempcnta\endcsname}
+        \end{minipage}%
+        \ifnum\@tempcnta<\@institutioncount
+          \hfill
+        \fi
+        \advance\@tempcnta by 1
+        \ifnum\@tempcnta>\@institutioncount
+          \let\@tempdone\relax
+        \else
+          \let\@tempdone\repeat
+        \fi
+      \@tempdone
     \fi
-    \@tempdone
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
