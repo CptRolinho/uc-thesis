@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2025/05/30 v0.8.1 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2025/06/18 v0.9.0 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -130,10 +130,8 @@
 \RequirePackage{siunitx} % Provides consistent handling of numbers and units
 \RequirePackage[capitalise,nameinlink]{cleveref} % Enhances cross-referencing with capitalization and links
 \RequirePackage{acro} % Manages acronyms with extended functionality
-\RequirePackage{tabu} % Provides enhanced table functionalities
-\RequirePackage{multirow} % Allows multi-row cells in tables
-\RequirePackage{tabularx} % Provides tables with flexible column widths
-\RequirePackage{booktabs} % Enhances table appearance with better horizontal lines
+\RequirePackage{tabularray}
+\UseTblrLibrary{booktabs}
 \RequirePackage{adjustbox} % Provides additional options for adjusting boxes and figures
 \RequirePackage{float} % Provides improved control over figure and table placement
 \RequirePackage{indentfirst} % Indents the first paragraph of each section
@@ -735,16 +733,23 @@
     {\fontsize{16pt}{16pt}\selectfont\bfseries\printsupervisorslines}
     
     \fontsize{12pt}{12pt}\textbf{\jurycaption}
-    \begin{table}[h]
-    \begin{tabu} to \textwidth {@{} X[l] X[5,l] @{}}
-    \multirow{2}{*}{\textbf{\presidentcaption}} & \textbf{\@presidenttitle}\ \fontsize{14pt}{14pt}\textbf{\@president} \\
-        & \textbf{\@presidentposition} \\[5pt]
-    \multirow{2}{*}{\textbf{\supervisorcaption}} & \textbf{\@supervisorinjurytitle}\ \fontsize{14pt}{14pt}\textbf{\@supervisorinjuryname} \\
-        & \textbf{\@supervisorinjuryposition} \\[5pt]
-    \multirow{2}{*}{\textbf{\vowelcaption}} & \textbf{\@voweltitle}\ \fontsize{14pt}{14pt}\textbf{\@vowel} \\
+    
+    \begin{tblr}[
+    entry = none,
+    label = none,
+    ]{
+    colspec = { X[l] X[5,l] },
+    width = \textwidth,
+    rowhead = 1,
+    }
+    \SetCell[r=2]{m,1cm} \textbf{\presidentcaption} & \textbf{\@presidenttitle}\ \fontsize{14pt}{14pt}\textbf{\@president} \\
+        & \textbf{\@presidentposition} \\
+    \SetCell[r=2]{m,1cm}{\textbf{\supervisorcaption}} & \textbf{\@supervisorinjurytitle}\ \fontsize{14pt}{14pt}\textbf{\@supervisorinjuryname} \\ 
+        & \textbf{\@supervisorinjuryposition} \\
+    \SetCell[r=2]{m,1cm}{\textbf{\vowelcaption}} & \textbf{\@voweltitle}\ \fontsize{14pt}{14pt}\textbf{\@vowel} \\
         & \textbf{\@vowelposition}
-    \end{tabu}
-    \end{table}\\[\baselineskip]
+    \end{tblr}
+    \\[\baselineskip]
     
     \vfill
     \printinstitutions
