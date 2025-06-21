@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2025/06/18 v0.9.0 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2025/06/21 v0.9.1 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -403,7 +403,8 @@
     \def\keythesisscope{\@thesis\ within the scope of the \@longdegree\ supervised by \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{and \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{and presented to \@affiliation}%
-    \def\keythesistitle{Submitted in Partial Fulfilment of the Requirements for the Degree of \@degree\ in \@area\ in the speciality of \@speciality}%
+    \def\keythesistitle{Submitted in Partial Fulfilment of the Requirements for the Degree of \@degree\ in \@area}%
+    \def\keythesisspeciality{in the speciality of \@speciality}%
     \def\monthyear{\@month\ of \@year}%
 }
 
@@ -432,7 +433,8 @@
     \def\keythesisscope{\@thesis\ no âmbito do \@longdegree\ orientado por \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{e \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{e apresentada \@affiliation}%
-    \def\keythesistitle{\@thesis\ apresentada para a obtenção do grau de \@degree\ em \@area\ na Especialidade de \@speciality}%
+    \def\keythesistitle{\@thesis\ apresentada para a obtenção do grau de \@degree\ em \@area}%
+    \def\keythesisspeciality{na Especialidade de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -461,7 +463,8 @@
     \def\keythesisscope{\@thesis\ en el marco del \@longdegree\ supervisada por \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{y \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{y presentada a \@affiliation}%
-    \def\keythesistitle{Presentada para la obtención del título de \@degree\ en \@area\ en la especialidad de \@speciality}%
+    \def\keythesistitle{Presentada para la obtención del título de \@degree\ en \@area}%
+    \def\keythesisspeciality{en la especialidad de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -490,7 +493,8 @@
     \def\keythesisscope{\@thesis\ dans le cadre du \@longdegree\ supervisé par \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{et \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{et présenté à \@affiliation}%
-    \def\keythesistitle{Soumis en vue de l’obtention du diplôme de \@degree\ en \@area\ dans la spécialité de \@speciality}%
+    \def\keythesistitle{Soumis en vue de l’obtention du diplôme de \@degree\ en \@area}%
+    \def\keythesisspeciality{dans la spécialité de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -724,7 +728,13 @@
     \includegraphics[width=\textwidth]{\@faculty}\\[2\baselineskip]
     \vfill
     \fontsize{20pt}{20pt}\textbf{\@title}\\
-    \keythesistitle\\[1.5\baselineskip]
+    \keythesistitle
+    \ifx\@speciality\@empty
+        % do nothing
+    \else
+        \keythesisspeciality
+    \fi
+    \\[1.5\baselineskip]
     \fontsize{16pt}{16pt}\textbf{\@alttitle}\\[1\baselineskip]
     \fontsize{12pt}{12pt}\textbf{\authorcaption}\\
     \fontsize{16pt}{16pt}\textbf{\@author}\\
@@ -738,16 +748,14 @@
     entry = none,
     label = none,
     ]{
-    colspec = { X[l] X[5,l] },
+    colspec = { X[m,l] X[5,m,l] },
     width = \textwidth,
     rowhead = 1,
+    leftsep = 0pt,
     }
-    \SetCell[r=2]{m,1cm} \textbf{\presidentcaption} & \textbf{\@presidenttitle}\ \fontsize{14pt}{14pt}\textbf{\@president} \\
-        & \textbf{\@presidentposition} \\
-    \SetCell[r=2]{m,1cm}{\textbf{\supervisorcaption}} & \textbf{\@supervisorinjurytitle}\ \fontsize{14pt}{14pt}\textbf{\@supervisorinjuryname} \\ 
-        & \textbf{\@supervisorinjuryposition} \\
-    \SetCell[r=2]{m,1cm}{\textbf{\vowelcaption}} & \textbf{\@voweltitle}\ \fontsize{14pt}{14pt}\textbf{\@vowel} \\
-        & \textbf{\@vowelposition}
+    \textbf{\presidentcaption} & {\textbf{\@presidenttitle}\ {\fontsize{14pt}{14pt}\textbf{\@president}} \\ \textbf{\@presidentposition}} \\
+    \textbf{\supervisorcaption} & {\textbf{\@supervisorinjurytitle}\ {\fontsize{14pt}{14pt}\textbf{\@supervisorinjuryname}} \\ \textbf{\@supervisorinjuryposition}} \\
+    \textbf{\vowelcaption} & {\textbf{\@voweltitle}\ {\fontsize{14pt}{14pt}\textbf{\@vowel}} \\ \textbf{\@vowelposition}}
     \end{tblr}
     \\[\baselineskip]
     
