@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2025/06/21 v0.9.1 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2025/06/24 v0.10.0 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -20,9 +20,11 @@
 % Thesis Level
 \newif\if@msc
 \newif\if@phd
+\newif\if@thesis
 
-\DeclareOption{msc}{\@msctrue\@phdfalse}
-\DeclareOption{phd}{\@mscfalse\@phdtrue}
+\DeclareOption{msc}{\@msctrue\@phdfalse\@thesisfalse}
+\DeclareOption{phd}{\@mscfalse\@phdtrue\@thesisfalse}
+\DeclareOption{thesis}{\@mscfalse\@phdfalse\@thesistrue}
 
 % Faculty Options
 \newif\if@fcdefuc
@@ -68,11 +70,15 @@
 \AtBeginDocument{%
   \if@msc
     \def\@degree{\mscdegree}%
-    \def\@thesis{\mscthesis}%
+    \def\@doc{\mscdocument}%
   \fi
   \if@phd
     \def\@degree{\phddegree}%
-    \def\@thesis{\phdthesis}%
+    \def\@doc{\phddocument}%
+  \fi
+  \if@thesis
+    \def\@degree{\thesisdegree}%
+    \def\@doc{\thesisdocument}%
   \fi
 }
 
@@ -116,6 +122,7 @@
 % \bibliographystyle{unsrtnat} % Sets bibliography style to numeric and unsorted
 \RequirePackage[backend=biber, style=numeric, sorting=none, natbib=true, maxcitenames = 2]{biblatex}
 
+\RequirePackage{xparse}
 \RequirePackage{url} % Provides URL formatting and handling
 \RequirePackage{tikz} % Provides a powerful tool for creating graphics programmatically
 \RequirePackage{titlesec} % Customizes section headings and title formats
@@ -124,8 +131,6 @@
 \RequirePackage{xcolor} % Provides color options for text and elements
 % \RequirePackage{xkeyval} % Provides key-value option handling for packages
 \RequirePackage{pdfpages} % Includes external PDF pages in the document
-\RequirePackage{pdfpages} % VERIFY THE RELEVANCE OF THE PACKAGE
-
 \RequirePackage{import} % Facilitates file import and handling
 \RequirePackage{siunitx} % Provides consistent handling of numbers and units
 \RequirePackage[capitalise,nameinlink]{cleveref} % Enhances cross-referencing with capitalization and links
@@ -344,7 +349,7 @@
 \newcommand{\printinstitutions}{%
   \ifnum\@institutioncount>0
     \par\noindent
-    {\fontsize{12pt}{12pt}\selectfont\textbf{\institutioncaption}}\par\smallskip
+    {\fontsize{12pt}{14pt}\selectfont\textbf{\institutioncaption}}\par\smallskip
     \hrule\vspace{1em}
     \noindent
     \ifnum\@institutioncount=1
@@ -395,16 +400,18 @@
     \def\titlepagecaption{Title Page}%
     \def\vowelcaption{Vowel}%
     \def\mscdegree{Master}%
-    \def\mscthesis{Dissertation}%
+    \def\mscdocument{Dissertation}%
     \def\phddegree{Doctor}%    
-    \def\phdthesis{Thesis}%
+    \def\phddocument{Thesis}%
+    \def\thesisdegree{Doctor}%    
+    \def\thesisdocument{Thesis Project}%
     \def\supervisorand{and}%
-    \def\keythesiscover{\@thesis\ within the scope of the \@longdegree\ supervised by \printsupervisors, and presented to \@affiliation}%
-    \def\keythesisscope{\@thesis\ within the scope of the \@longdegree\ supervised by \@supervisortitle\ \@supervisor}%
+    \def\keythesiscover{\@doc\ within the scope of the \@longdegree\ supervised by \printsupervisors, and presented to \@affiliation}%
+    \def\keythesisscope{\@doc\ within the scope of the \@longdegree\ supervised by \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{and \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{and presented to \@affiliation}%
     \def\keythesistitle{Submitted in Partial Fulfilment of the Requirements for the Degree of \@degree\ in \@area}%
-    \def\keythesisspeciality{in the speciality of \@speciality}%
+    \def\keythesisspeciality{\ in the speciality of \@speciality}%
     \def\monthyear{\@month\ of \@year}%
 }
 
@@ -425,16 +432,18 @@
     \def\titlepagecaption{Página de Título}%
     \def\vowelcaption{Vogal}%
     \def\mscdegree{Mestre}%
-    \def\mscthesis{Dissertação}%
+    \def\mscdocument{Dissertação}%
     \def\phddegree{Doutor}%    
-    \def\phdthesis{Tese}%
+    \def\phddocument{Tese}%
+    \def\thesisdegree{Doutor}%    
+    \def\thesisdocument{Projeto de Tese}%
     \def\supervisorand{e}%
-    \def\keythesiscover{\csname @thesis\endcsname\ no âmbito do \@longdegree\ orientado por \printsupervisors, e apresentada \@affiliation}%
-    \def\keythesisscope{\@thesis\ no âmbito do \@longdegree\ orientado por \@supervisortitle\ \@supervisor}%
+    \def\keythesiscover{\csname @doc\endcsname\ no âmbito do \@longdegree\ orientado por \printsupervisors, e apresentada \@affiliation}%
+    \def\keythesisscope{\@doc\ no âmbito do \@longdegree\ orientado por \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{e \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{e apresentada \@affiliation}%
-    \def\keythesistitle{\@thesis\ apresentada para a obtenção do grau de \@degree\ em \@area}%
-    \def\keythesisspeciality{na Especialidade de \@speciality}%
+    \def\keythesistitle{\@doc\ apresentada para a obtenção do grau de \@degree\ em \@area}%
+    \def\keythesisspeciality{\ na Especialidade de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -455,16 +464,18 @@
     \def\titlepagecaption{Página de Título}%
     \def\vowelcaption{Vocal}%
     \def\mscdegree{Máster}%
-    \def\mscthesis{Trabajo de Fin de Máster}%
+    \def\mscdocument{Trabajo de Fin de Máster}%
     \def\phddegree{Doctor}%    
-    \def\phdthesis{Tesis}%
+    \def\phddocument{Tesis}%
+    \def\thesisdegree{Doctor}%    
+    \def\thesisdocument{Proyecto de Tesis}%
     \def\supervisorand{y}%
-    \def\keythesiscover{\@thesis\ en el marco del \@longdegree\ supervisada por \printsupervisors, y presentada a \@affiliation}%
-    \def\keythesisscope{\@thesis\ en el marco del \@longdegree\ supervisada por \@supervisortitle\ \@supervisor}%
+    \def\keythesiscover{\@doc\ en el marco del \@longdegree\ supervisada por \printsupervisors, y presentada a \@affiliation}%
+    \def\keythesisscope{\@doc\ en el marco del \@longdegree\ supervisada por \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{y \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{y presentada a \@affiliation}%
     \def\keythesistitle{Presentada para la obtención del título de \@degree\ en \@area}%
-    \def\keythesisspeciality{en la especialidad de \@speciality}%
+    \def\keythesisspeciality{\ en la especialidad de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -485,16 +496,18 @@
     \def\titlepagecaption{Page de Titre}%
     \def\vowelcaption{Membre du Jury}%
     \def\mscdegree{Master}%
-    \def\mscthesis{Mémoire}%
+    \def\mscdocument{Mémoire}%
     \def\phddegree{Docteur}%    
-    \def\phdthesis{Thèse}%
+    \def\phddocument{Thèse}%
+    \def\thesisdegree{Docteur}%    
+    \def\thesisdocument{Projet de Thèse}%
     \def\supervisorand{et}%
-    \def\keythesiscover{\@thesis\ dans le cadre du \@longdegree\ supervisé par \printsupervisors, et présenté à \@affiliation}%
-    \def\keythesisscope{\@thesis\ dans le cadre du \@longdegree\ supervisé par \@supervisortitle\ \@supervisor}%
+    \def\keythesiscover{\@doc\ dans le cadre du \@longdegree\ supervisé par \printsupervisors, et présenté à \@affiliation}%
+    \def\keythesisscope{\@doc\ dans le cadre du \@longdegree\ supervisé par \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{et \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{et présenté à \@affiliation}%
     \def\keythesistitle{Soumis en vue de l’obtention du diplôme de \@degree\ en \@area}%
-    \def\keythesisspeciality{dans la spécialité de \@speciality}%
+    \def\keythesisspeciality{\ dans la spécialité de \@speciality}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -587,7 +600,7 @@
 %% right, followed by the part name on the next line in the title color.
 \titleformat{\part}[display]
     {}
-    {\fontsize{18pt}{18pt}\selectfont\bfseries\thepart}
+    {\fontsize{18pt}{20pt}\selectfont\bfseries\thepart}
     {0pt}
     {\Huge\color{title}}
 %% Separate the title from the text by two empty lines.
@@ -599,9 +612,9 @@
 %% Chapter titles have the same layout as parts.
 \titleformat{\chapter}
     {}% format
-    {\fontsize{18pt}{18pt}\bfseries\thechapter.\ }% label
+    {\fontsize{18pt}{20pt}\bfseries\thechapter.\ }% label
     {0pt}% sep
-    {\fontsize{18pt}{18pt}\bfseries\color{title}}% before
+    {\fontsize{18pt}{20pt}\bfseries\color{title}}% before
 %% Separate the title from the text by two empty lines.
 \titlespacing{\part}{0pt}{0pt}{2\baselineskip}
 %% In the table of contents, a chapter is similar to a part, except that it is preceded by half an empty line.
@@ -610,9 +623,9 @@
 %% Section titles start with the number in bold, followed by the name printed in the title color.
 \titleformat{\section}
     {}
-    {\fontsize{16pt}{16pt}\bfseries\thesection.\ }
+    {\fontsize{16pt}{18pt}\bfseries\thesection.\ }
     {0pt}
-    {\fontsize{16pt}{16pt}\bfseries\color{title}}
+    {\fontsize{16pt}{18pt}\bfseries\color{title}}
 %% Sections are preceded by an empty line.
 \titlespacing{\section}{0pt}{\baselineskip}{0pt}
 %% In the table of contents, section names are followed by a line of dots 8pt apart.
@@ -621,9 +634,9 @@
 %% Subsection titles have the same layout as section titles, except in a smaller font.
 \titleformat{\subsection}
     {}
-    {\fontsize{14pt}{14pt}\bfseries\thesubsection.\ }
+    {\fontsize{14pt}{16pt}\bfseries\thesubsection.\ }
     {0pt}
-    {\fontsize{14pt}{14pt}\bfseries\color{title}}
+    {\fontsize{14pt}{16pt}\bfseries\color{title}}
 \titlespacing{\subsection}{0pt}{\baselineskip}{0pt}
 \dottedcontents{subsection}[7em]{\titlefont}{3.2em}{8pt}
 
@@ -643,6 +656,8 @@
 \renewcommand*\labelitemiii{\color{title}$\diamond$}
 \renewcommand*\labelitemiv{\color{title}\textperiodcentered}
 
+%% Removes "Chapter" from the header
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
 
 %% Appendix
 % \renewcommand\appendix{\par
@@ -654,9 +669,9 @@
 %     \gdef\thechapter{\@Alph\c@chapter}%
 %     \titleformat{\chapter}
 %     {}% format
-%     {\fontsize{18pt}{18pt}\bfseries \appendixname\ \thechapter.\ }% label
+%     {\fontsize{18pt}{20pt}\bfseries \appendixname\ \thechapter.\ }% label
 %     {0pt}% sep
-%     {\fontsize{18pt}{18pt}\bfseries\color{title}}% before
+%     {\fontsize{18pt}{20pt}\bfseries\color{title}}% before
 %     \dottedcontents{chapter}[6.55em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{6.5em}{0pc}%
 %     \dottedcontents{section}[8.35em]{\titlefont}{6.75em}{8pt}%
 % }
@@ -670,9 +685,9 @@
 %     \gdef\thechapter{\annexcaption\ \@Alph\c@chapter}%
 %     \titleformat{\chapter}
 %     {}% format
-%     {\fontsize{18pt}{18pt}\bfseries \thechapter.\ }% label
+%     {\fontsize{18pt}{20pt}\bfseries \thechapter.\ }% label
 %     {0pt}% sep
-%     {\fontsize{18pt}{18pt}\bfseries\color{title}}% before
+%     {\fontsize{18pt}{20pt}\bfseries\color{title}}% before
 %     \dottedcontents{chapter}[5.05em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{5em}{0pc}
 % }
 
@@ -693,19 +708,19 @@
         \includegraphics[height=7 cm]{institutional/UC_V_Capa}
         \vspace{2.5 cm}
     
-        \arrusbt\color{uc-font}\fontsize{18pt}{18pt}\selectfont\@author\\
+        \arrusbt\color{uc-font}\fontsize{18pt}{20pt}\selectfont\@author\\
         \vspace{2.5 cm}
     
-        \arrusbt\color{uc-font}\fontsize{22pt}{22pt}\selectfont\textbf{{\@title}}
+        \arrusbt\color{uc-font}\fontsize{22pt}{24pt}\selectfont\textbf{{\@title}}
         \ifx\@subtitle\undefined\else
             \\
-            \fontsize{20pt}{20pt}\selectfont{\@subtitle}
+            \fontsize{20pt}{22pt}\selectfont{\@subtitle}
         \fi
         %% Print the affiliation.
         \vfill
-        \arrusbt\color{uc-font}\fontsize{12pt}{12pt}\selectfont\textbf{\keythesiscover}\\
+        \arrusbt\color{uc-font}\fontsize{12pt}{14pt}\selectfont\textbf{\keythesiscover}\\
         \vspace{2 cm}
-        \arrusbt\color{uc-font}\fontsize{16pt}{16pt}\selectfont \monthyear
+        \arrusbt\color{uc-font}\fontsize{16pt}{18pt}\selectfont \monthyear
         \vspace{2.5 cm}
     \end{center}
     
@@ -727,7 +742,7 @@
     \setlength{\parindent}{0pt}
     \includegraphics[width=\textwidth]{\@faculty}\\[2\baselineskip]
     \vfill
-    \fontsize{20pt}{20pt}\textbf{\@title}\\
+    \fontsize{20pt}{22pt}\textbf{\@title}\\
     \keythesistitle
     \ifx\@speciality\@empty
         % do nothing
@@ -735,14 +750,14 @@
         \keythesisspeciality
     \fi
     \\[1.5\baselineskip]
-    \fontsize{16pt}{16pt}\textbf{\@alttitle}\\[1\baselineskip]
-    \fontsize{12pt}{12pt}\textbf{\authorcaption}\\
-    \fontsize{16pt}{16pt}\textbf{\@author}\\
+    \fontsize{16pt}{18pt}\textbf{\@alttitle}\\[1\baselineskip]
+    \fontsize{12pt}{14pt}\textbf{\authorcaption}\\
+    \fontsize{16pt}{18pt}\textbf{\@author}\\
 
-    \fontsize{12pt}{12pt}\textbf{\ifnum\@supervisorcount>1\cosupervisorcaption\else\supervisorcaption\fi}\\
-    {\fontsize{16pt}{16pt}\selectfont\bfseries\printsupervisorslines}
+    \fontsize{12pt}{14pt}\textbf{\ifnum\@supervisorcount>1\cosupervisorcaption\else\supervisorcaption\fi}\\
+    {\fontsize{16pt}{18pt}\selectfont\bfseries\printsupervisorslines}
     
-    \fontsize{12pt}{12pt}\textbf{\jurycaption}
+    \fontsize{12pt}{14pt}\textbf{\jurycaption}
     
     \begin{tblr}[
     entry = none,
@@ -753,9 +768,9 @@
     rowhead = 1,
     leftsep = 0pt,
     }
-    \textbf{\presidentcaption} & {\textbf{\@presidenttitle}\ {\fontsize{14pt}{14pt}\textbf{\@president}} \\ \textbf{\@presidentposition}} \\
-    \textbf{\supervisorcaption} & {\textbf{\@supervisorinjurytitle}\ {\fontsize{14pt}{14pt}\textbf{\@supervisorinjuryname}} \\ \textbf{\@supervisorinjuryposition}} \\
-    \textbf{\vowelcaption} & {\textbf{\@voweltitle}\ {\fontsize{14pt}{14pt}\textbf{\@vowel}} \\ \textbf{\@vowelposition}}
+    \textbf{\presidentcaption} & {\textbf{\@presidenttitle}\ {\fontsize{14pt}{16pt}\textbf{\@president}} \\ \textbf{\@presidentposition}} \\
+    \textbf{\supervisorcaption} & {\textbf{\@supervisorinjurytitle}\ {\fontsize{14pt}{16pt}\textbf{\@supervisorinjuryname}} \\ \textbf{\@supervisorinjuryposition}} \\
+    \textbf{\vowelcaption} & {\textbf{\@voweltitle}\ {\fontsize{14pt}{16pt}\textbf{\@vowel}} \\ \textbf{\@vowelposition}}
     \end{tblr}
     \\[\baselineskip]
     
@@ -763,11 +778,11 @@
     \printinstitutions
     
     \vfill
-    \fontsize{14pt}{14pt}\textbf{Coimbra, \@month, \@year}
+    \fontsize{14pt}{16pt}\textbf{Coimbra, \@month, \@year}
     \restoregeometry%
     \setlength{\parindent}{1.5em}
     \cleardoublepage
-    \fontsize{12}{12}
+    \fontsize{12pt}{14pt}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -832,11 +847,13 @@
 }
 
 \newcommand*\makeabstract{%
-    \clearpage%
-    \langabstract{\primarylang}{\@abstract}{\@keywords}
-    \cleardoublepage
+  \clearpage%
+  \langabstract{\primarylang}{\@abstract}{\@keywords}
+  \cleardoublepage
+  \if@thesis\else
     \langabstract{\secondarylang}{\@altabstract}{\@altkeywords}
     \cleardoublepage
+  \fi
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -867,3 +884,65 @@
 %   \ifstrequal{#1}{U}{Subscripts}{%   
 %   \ifstrequal{#1}{X}{Other Symbols}{}}}}}}]%
 %  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%% Thesis Structure %%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ExplSyntaxOn
+% Logical flags
+\newif\if@includeloft
+\newif\if@includelott
+\newif\if@includeacro
+\newif\if@includenomen
+
+% Fallback to include all
+\newcommand*\setallfrontmatterflags{%
+  \@includelofttrue
+  \@includelotttrue
+  \@includeacrotrue
+  \@includenomentrue
+}
+
+\NewDocumentCommand{\makefrontmatter}{O{lists=all}}{%
+  % Reset all flags
+  \@includeloftfalse
+  \@includelottfalse
+  \@includeacrofalse
+  \@includenomenfalse
+
+  % Parse user options
+  \str_if_eq:nnTF {#1} {lists=all} {
+    \setallfrontmatterflags
+  } {
+    \tl_if_in:nnT {#1} {figures}      { \@includelofttrue }
+    \tl_if_in:nnT {#1} {tables}       { \@includelotttrue }
+    \tl_if_in:nnT {#1} {acronyms}     { \@includeacrotrue }
+    \tl_if_in:nnT {#1} {nomenclature} { \@includenomentrue }
+  }
+
+  % Print front matter
+  \frontmatter
+  \makecover
+  \maketitlepage
+  \if@thesis\else\makededication\fi
+  \if@thesis\else\makeacknowledgement\fi
+  \makeabstract
+  \tableofcontents
+  \cleardoublepage
+
+  \if@includeloft
+    \listoffigures
+    \cleardoublepage
+  \fi
+  \if@includelott
+    \listoftables
+    \cleardoublepage
+  \fi
+  \if@includeacro
+    \listofacronyms
+  \fi
+  \if@includenomen
+    \printnomenclature
+  \fi
+}
+\ExplSyntaxOff

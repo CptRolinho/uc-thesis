@@ -1,6 +1,17 @@
 \chapter{User Manual}
-This document provides guidance on how to use the \texttt{uc-thesis} class for the University of Coimbra thesis template. It covers the main features introduced as of version~\textbf{0.8.0}.
-\section{User Guide}
+This document provides guidance on how to use the \texttt{uc-thesis} class for the University of Coimbra thesis template. It covers the main features introduced as of version~\textbf{0.10.0}.
+
+This \LaTeX\ thesis template is organized for clarity, modularity, and ease of use. Here's a breakdown of the main components:
+\begin{itemize}
+    \item \texttt{uc-thesis.cls} is the heart of the template. It defines the class (uc-thesis) and all internal macros. You do not need to edit this file unless you're customizing the layout or logic.
+    \item \texttt{thesis.tex} is the root file of the thesis. This is where you compile the project and control the overall structure.
+    \item \texttt{thesis-info.tex} contains all personalized metadata and declarations about the thesis.
+    \item \texttt{institutional/} stores University of Coimbra and Faculty logos used on the cover and title page.
+    \item \texttt{fonts/} stores the custom fonts required by the University of Coimbra.
+    \item \texttt{chapters/} stores .tex files to represent a chapter or section. You’re free to structure this folder however fits your thesis (e.g., \texttt{intro.tex}, \texttt{methodology.tex}, \texttt{conclusion.tex}).
+    \item To organize all your images or figures you can add a folder like \texttt{images/}, and although this is optional as \LaTeX\ doesn’t require them to be separated, it is reccommended as a best practice.
+\end{itemize}
+\section{Inside \texttt{thesis.tex}}
 \subsection{Document Class Setup}
 
 Begin your thesis with the class declaration:
@@ -9,20 +20,106 @@ Begin your thesis with the class declaration:
     \documentclass[main=english,alt=portuguese,phd,fctuc]{uc-thesis}
 \end{verbatim}
 
-Available class options:
+The available class options are language, through main and alt, document type and faculty.
 
+The language setting automatically adjusts key terms and content via \texttt{babel}, but both main and alt languages must be declared. Available options include:
 \begin{itemize}
-    \item \texttt{msc} or \texttt{phd} — to specify the degree level.
-    \item \texttt{english} or \texttt{portuguese} — to define the main language of the document.
+    \item \texttt{portuguese}
+    \item \texttt{english}
+    \item \texttt{spanish}
+    \item \texttt{french}
 \end{itemize}
 
-The language setting automatically adjusts key terms and content via \texttt{babel}.
+For the document type there are three options:
+\begin{itemize}
+    \item \texttt{msc} - for a Master's Dissertation
+    \item \texttt{phd} - for a PhD Thesis
+    \item \texttt{thesis} - For a PhD Thesis Project
+\end{itemize}
 
-\subsection{Declaring Supervisors}
+Finally faculty options are:
+\begin{itemize}
+    \item \texttt{fcdefuc} - Faculdade de Ciências do Desporto e Educação Física
+    \item \texttt{fctuc} - Faculdade de Ciências e Tecnologia
+    \item \texttt{fduc} - Faculdade de Direito
+    \item \texttt{feuc} - Faculdade de Economia
+    \item \texttt{ffuc} - Faculdade de Farmácia
+    \item \texttt{fluc} - Faculdade de Letras
+    \item \texttt{fmuc} - Faculdade de Medicina
+    \item \texttt{fpceuc} - Faculdade de Psicologia e Ciências da Educação
+\end{itemize}
+
+This is an evolving project. The template may not be completely correct for each Faculty, or even Departments within the Faculties, as it has been build from the Mechanical Engineering Department's template. Please contact the author to request modifications.
+
+\subsection{Printing the Front Matter}
+Version~\textbf{0.10.0} introduced the command \verb|\makefrontmatter| to produce a clean, minimal and professional document structure in the main file \texttt{thesis.tex}.
+
+By default the command will print the required front matter according to the document type, and all lists as:
+\begin{verbatim}
+    \makefrontmatter
+\end{verbatim}
+It is possible to customize which lists are printed by declaring them:
+\begin{verbatim}
+    \makefrontmatter[lists=figures,tables,acronyms,nomenclature]
+\end{verbatim}
+Undeclared lists will not be printed.
+
+\subsection{Managing the Body of the Thesis}
+After printing the front matter, we introduce the main matter with \verb|\mainmatter|. After if you will import the contents of the body using the commands \verb|\import| or \verb|\input|.
+\begin{verbatim}
+    \import{chapters/}{introduction.tex}
+    \import{chapters/}{methodology.tex}
+    \import{chapters/}{conclusion.tex}
+\end{verbatim}
+
+Simmilarly, appendixes are added after \verb|\appendix|, and annexes after \verb|\annex|. However, in the current version, there is a conflict between appendix and annex, and therefore only appendix is being used.
+
+\section{Inside \texttt{thesis-info.tex}}
+In \texttt{thesis-info.tex} you will declare:
+\begin{itemize}
+    \item Author name
+    \item Thesis title
+    \item Thesis date
+    \item Graduation
+    \item Affiliation
+    \item Supervisors
+    \item Jury
+    \item Dedication
+    \item Acknowledgement
+    \item Abstract
+    \item Keywords
+\end{itemize}
+
+\subsection{Declaring Thesis Metadata}
+Declaring your name is straightforward using the \verb|\author| command:
+\begin{verbatim}
+    \author{Your Name}
+\end{verbatim}
+For the title you have two commands:
+\begin{verbatim}
+    \title{title}{subtitle}
+    \alttitle{title}{subtitle}|
+\end{verbatim}
+these allow you to define a title and subtitle for the main and alt languages of the thesis.
+
+With the \verb|\graduation{field}{specialty}{degree}| command you define the field of the degree, the speciality, and the degree name. Speciality is an optional parameter that can be left empty, the others shouldn't.
+\begin{verbatim}
+    \graduation{Mechanical Engineering}{}{Masters in Mechanical Engineering}
+\end{verbatim}
+
+And the \verb|\affiliation| allows you to define the full name of the organic entity you're presenting your thesis to.
+\begin{verbatim}
+    \affiliation{Departamento de Engenharia Mecânica
+       da Faculdade de Ciências e Tecnologia}
+\end{verbatim}
+
+The command \verb|\thesisdate{month}{year}| defines the month and year in which the thesis is submitted.
+
+\subsection{Declaring Supervisors and Jury}
 
 Declare supervisors using the unified \verb|\supervisor| command:
 \begin{verbatim}
-    \supervisor{<title>}{<position>}{<name>}
+    \supervisor{title}{position}{name}
 \end{verbatim}
 
 You can define any number of supervisors. For example:
@@ -37,6 +134,8 @@ To indicate which supervisor is part of the jury, use:
 \end{verbatim}
 
 This selects the $n$-th supervisor (in declaration order) for jury-related sections.
+
+To declare the jury you have two commands, similar to \verb|\supervisor|, \verb|\president| for the president of the jury, and \verb|\vowel| for the vowel(s). You can declare up to two vowels.
 
 \subsection{Declaring Institutions}
 
@@ -55,9 +154,60 @@ Example:
 
 Logos will be printed above the institution names on the title page, and the layout adapts to support any number of institutions.
 
-\section{Changelog}
-\subsection{Version 0.8.0}
+\subsection{Declaring Thesis Preamble}
+The last commands of the \texttt{thesis-info.tex} are \verb|\dedication|, \verb|\acknowledgement|, \verb|\thesisabstract| and \verb|\thesiskeywords|.
 
+Dedication and acknowledgement are straightforward:
+\begin{verbatim}
+    \dedication{Write your dedication here}
+    \acknowledgement{Write your acknowledgements here}
+\end{verbatim}
+
+The abstract and keywords have two components. The first for the main language, and the second for the alt language.
+\begin{verbatim}
+    \thesisabstract{Abstract in Main Language}{and in Secondary Language}
+    \thesiskeywords{Keywords in Main Language}{and  in Secondary Language}
+\end{verbatim}
+
+\section{Changelog}
+\subsection{Version 0.10.0}
+\begin{itemize}
+\item \textbf{Cleaned the root file:}\\
+The \texttt{thesis.tex} file has been cleaned, with instructions reduced to have a clear,
+minimal and professional document structure with fewer distractions for user unfamiliar with \LaTeX\ class coding.
+
+\item \textbf{New front matter command:}\\  
+Introduced \texttt{\textbackslash makefrontmatter} to condense front matter objects into a single command that respects the document type specifications. It also allows to choose which lists are printed.
+
+\item \textbf{Added thesis as a document type:}\\  
+Expanding on the options of \texttt{msc} and \texttt{phd}, a \texttt{thesis} option has been added to prepare the document for thesis project requirements.
+
+\item \textbf{Typography adjustment:}\\  
+Edited all font sizings in the class to adjust line spacing for better legibillity.
+
+\item \textbf{Fixed title page bug:}\\  
+Added a required extra space before specialty in the title page description text.
+\end{itemize}
+
+\subsection{Version 0.9.1}
+\begin{itemize}
+\item \textbf{Specialty as optional:}\\
+Allowed specialty from \verb|\graduation| command to be an optional parameter (leaved empty), but now dynamically chnanging the title page description text.
+\end{itemize}
+
+\subsection{Version 0.9.0}
+\begin{itemize}
+\item \textbf{Replaced \texttt{tabu} with \texttt{tabularray}:}\\
+Considering that \texttt{tabu} package is inactive, it has been replaced with the more modern \texttt{tabularray} package. Consult respective documentation.
+\end{itemize}
+
+\subsection{Version 0.8.1}
+\begin{itemize}
+\item \textbf{Fixed a no institution case:}\\
+Fixed the \verb|\printinstitution| command for the case where no institution is declared.
+\end{itemize}
+
+\subsection{Version 0.8.0}
 \begin{itemize}
 \item \textbf{Added a changelog system:}\\ This file! A dedicated \texttt{.tex} file has been introduced to track versioned changes to the class, embedded directly into the documentation.
   
