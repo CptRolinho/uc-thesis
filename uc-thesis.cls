@@ -744,7 +744,7 @@
     \includegraphics[width=\textwidth]{\@faculty}\\[2\baselineskip]
     \vfill
     \fontsize{20pt}{22pt}\selectfont\textbf{\@title}%
-    \ifx\@subtitle\undefined
+    \ifx\@subtitle\@empty
       % no subtitle
     \else
       \textbf{: }{\fontsize{18pt}{20pt}\selectfont\@subtitle}%
@@ -758,7 +758,7 @@
     \fi
     \\[1.5\baselineskip]
     \fontsize{16pt}{18pt}\selectfont\textbf{\@alttitle}%
-    \ifx\@altsubtitle\undefined
+    \ifx\@altsubtitle\@empty
         % do nothing
     \else
         \textbf{: }{\fontsize{14pt}{16pt}\selectfont\@altsubtitle}%
