@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2025/06/24 v0.10.0 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2025/09/10 v0.10.1 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -136,7 +136,7 @@
 \RequirePackage[capitalise,nameinlink]{cleveref} % Enhances cross-referencing with capitalization and links
 \RequirePackage{acro} % Manages acronyms with extended functionality
 \RequirePackage{tabularray}
-\UseTblrLibrary{booktabs}
+\UseTblrLibrary{booktabs, siunitx}
 \RequirePackage{adjustbox} % Provides additional options for adjusting boxes and figures
 \RequirePackage{float} % Provides improved control over figure and table placement
 \RequirePackage{indentfirst} % Indents the first paragraph of each section
@@ -705,23 +705,24 @@
 
     \setlength{\parindent}{0pt}
         \begin{center}
-        \includegraphics[height=7 cm]{institutional/UC_V_Capa}
-        \vspace{2.5 cm}
+        \vspace*{2 cm}
+        \includegraphics[height=5 cm]{institutional/UC_V_Capa}
+        \vspace*{2.5 cm}
     
         \arrusbt\color{uc-font}\fontsize{18pt}{20pt}\selectfont\@author\\
-        \vspace{2.5 cm}
-    
-        \arrusbt\color{uc-font}\fontsize{22pt}{24pt}\selectfont\textbf{{\@title}}
+        \vspace*{2.3 cm}
+            
+        \arrusbt\color{uc-font}\fontsize{22pt}{24pt}\selectfont\textbf{\scshape{\@title}}
         \ifx\@subtitle\undefined\else
             \\
-            \fontsize{20pt}{22pt}\selectfont{\@subtitle}
+            \fontsize{20pt}{22pt}\selectfont{\textsc{\@subtitle}}
         \fi
         %% Print the affiliation.
         \vfill
         \arrusbt\color{uc-font}\fontsize{12pt}{14pt}\selectfont\textbf{\keythesiscover}\\
-        \vspace{2 cm}
+        \vfill %\vspace{2 cm}
         \arrusbt\color{uc-font}\fontsize{16pt}{18pt}\selectfont \monthyear
-        \vspace{2.5 cm}
+        \vspace*{1 cm}
     \end{center}
     
     %% Restore the margins and turn the page white again.
@@ -738,19 +739,31 @@
     \clearpage%
     \thispagestyle{empty}%
     \pdfbookmark{\titlepagecaption}{\titlepagecaption}
-    \newgeometry{top=2cm,bottom=1cm,inner=3cm,outer=2cm}%
+    \newgeometry{top=2cm,bottom=2cm,inner=3cm,outer=2cm}%
     \setlength{\parindent}{0pt}
     \includegraphics[width=\textwidth]{\@faculty}\\[2\baselineskip]
     \vfill
-    \fontsize{20pt}{22pt}\textbf{\@title}\\
-    \keythesistitle
+    \fontsize{20pt}{22pt}\selectfont\textbf{\@title}%
+    \ifx\@subtitle\undefined
+      % no subtitle
+    \else
+      \textbf{: }{\fontsize{18pt}{20pt}\selectfont\@subtitle}%
+    \fi
+    \\
+    \fontsize{12pt}{14pt}\selectfont\keythesistitle
     \ifx\@speciality\@empty
         % do nothing
     \else
         \keythesisspeciality
     \fi
     \\[1.5\baselineskip]
-    \fontsize{16pt}{18pt}\textbf{\@alttitle}\\[1\baselineskip]
+    \fontsize{16pt}{18pt}\selectfont\textbf{\@alttitle}%
+    \ifx\@altsubtitle\undefined
+        % do nothing
+    \else
+        \textbf{: }{\fontsize{14pt}{16pt}\selectfont\@altsubtitle}%
+    \fi
+    \\[1\baselineskip]
     \fontsize{12pt}{14pt}\textbf{\authorcaption}\\
     \fontsize{16pt}{18pt}\textbf{\@author}\\
 
