@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2025/09/10 v0.10.1 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2025/09/11 v0.10.2 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
