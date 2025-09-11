@@ -764,13 +764,13 @@
         \textbf{: }{\fontsize{14pt}{16pt}\selectfont\@altsubtitle}%
     \fi
     \\[1\baselineskip]
-    \fontsize{12pt}{14pt}\textbf{\authorcaption}\\
-    \fontsize{16pt}{18pt}\textbf{\@author}\\
+    \fontsize{12pt}{14pt}\selectfont\textbf{\authorcaption}\\
+    \fontsize{16pt}{18pt}\selectfont\textbf{\@author}\\
 
-    \fontsize{12pt}{14pt}\textbf{\ifnum\@supervisorcount>1\cosupervisorcaption\else\supervisorcaption\fi}\\
+    \fontsize{12pt}{14pt}\selectfont\textbf{\ifnum\@supervisorcount>1\cosupervisorcaption\else\supervisorcaption\fi}\\
     {\fontsize{16pt}{18pt}\selectfont\bfseries\printsupervisorslines}
     
-    \fontsize{12pt}{14pt}\textbf{\jurycaption}
+    \fontsize{12pt}{14pt}\selectfont\textbf{\jurycaption}
     
     \begin{tblr}[
     entry = none,
@@ -791,11 +791,11 @@
     \printinstitutions
     
     \vfill
-    \fontsize{14pt}{16pt}\textbf{Coimbra, \@month, \@year}
+    \fontsize{14pt}{16pt}\selectfont\textbf{Coimbra, \@month, \@year}
     \restoregeometry%
     \setlength{\parindent}{1.5em}
     \cleardoublepage
-    \fontsize{12pt}{14pt}
+    \fontsize{12pt}{14pt}\selectfont
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
