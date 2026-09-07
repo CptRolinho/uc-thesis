@@ -1,0 +1,26 @@
+# LaTeX build output
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.nlo
+*.nls
+*.out
+thesis.pdf
+thesis-titlepage-*.png
+thesis-toc-page-*.png
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+*-SAVE-ERROR
+
+# Generated from EPS graphics by the LaTeX toolchain
+*-eps-converted-to.pdf

@@ -170,6 +170,30 @@ The abstract and keywords have two components. The first for the main language, 
 \end{verbatim}
 
 \section{Changelog}
+\subsection{Version 0.11.0}
+\begin{itemize}
+\item \textbf{Fixed package option handling:}\\
+Document type, faculty, and language options are now processed consistently, preventing unused option warnings and ensuring \texttt{main} and \texttt{alt} are passed correctly to the template.
+
+\item \textbf{Fixed multilingual abstracts:}\\
+The abstract language selection now works correctly with \texttt{babel}, including language values stored through class options.
+
+\item \textbf{Restored Appendix and Annex support:}\\
+Appendices and annexes can now be used in the same document. Chapter entries in the table of contents are printed as \texttt{Appendix A} or \texttt{Annex A}, while section numbering remains compact, such as \texttt{A.1}.
+
+\item \textbf{Improved appendix and annex table of contents spacing:}\\
+Indented section and subsection entries under appendices and annexes so the hierarchy remains clear when prefixed chapter labels are used.
+
+\item \textbf{Selected title page by document type:}\\
+The \verb|\maketitlepage| command now chooses the title page layout according to the document type option. The \texttt{msc} option uses the Master's title page, while \texttt{phd} and \texttt{thesis} use the PhD-style title page.
+
+\item \textbf{Matched title page logo sizing:}\\
+The Master's title page logo now uses the same width as the PhD title page logo.
+
+\item \textbf{Ignored generated build files:}\\
+Added generated \LaTeX\ output files to \texttt{.gitignore}, including auxiliary files, logs, converted graphics, and the compiled sample PDF.
+\end{itemize}
+
 \subsection{Version 0.10.2}
 \begin{itemize}
 \item \textbf{Fixed fontsize settings in and after title page:}\\

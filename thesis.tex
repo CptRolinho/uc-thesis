@@ -1,68 +1,48 @@
-% \documentclass[main=english,alt=portuguese,phd,fctuc]{uc-thesis}
 \documentclass[main=portuguese,alt=english,msc,fctuc]{uc-thesis}
+% \documentclass[main=english,alt=portuguese,phd,fctuc]{uc-thesis}
 
 \addbibresource{thesis.bib}
 
 \import{}{acronyms.tex}
+\import{}{thesis-info.tex}
+\import{}{nomenclature.tex}
+
+\renewcommand\nomgroup[1]{%
+ % \itemsep10pt % Adjust the value as desired for the spacing between items
+ \vspace{\baselineskip} % Adjust the value as desired for the spacing before a group
+ \item[\large\bfseries 
+  \ifstrequal{#1}{Z}{Acrónimos}{% % não é necessário devido ao pacote de acrónimos
+  \ifstrequal{#1}{A}{}{%
+  \ifstrequal{#1}{G}{Símbolos Gregos}{%
+  \ifstrequal{#1}{S}{Sobrescritos}{% 
+  \ifstrequal{#1}{U}{Subscritos}{%   
+  \ifstrequal{#1}{X}{Outros Símbolos}{}}}}}}]%
+ }
+ 
+% Reducing spacing before the first group in the nomenclature to adjust for the spacing in the others
+\renewcommand{\nompreamble}{\vspace{-10pt}} % Adjust the value as desired for the spacing
 
 \makenomenclature
 
 \begin{document}
-%% Use Roman numerals for the page numbers of the title pages and table of contents.
-\frontmatter
-\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
-
-\import{}{thesis-info.tex}
-\import{}{nomenclature.tex}
-
-\makecover
-
-\maketitlepage
-
-\makededication
-
-\makeacknowledgement
-
-\makeabstract
-
-\tableofcontents
-
-\cleardoublepage
-
-\listoffigures
-
-\cleardoublepage
-
-\listoftables
-
-\cleardoublepage
-
-\listofacronyms
-
-\printnomenclature
+\makefrontmatter
+% \makefrontmatter[lists=figures,tables,acronyms,nomenclature] % possible lists to exclude
 
 \mainmatter
-\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
-
 %% Add chapters to be imported
-\fontsize{12}{12}\selectfont
-\input{chapters/chapter-1}
-\input{chapters/chapter-2}
+\import{chapters/}{chapter-1.tex}
+\import{chapters/}{chapter-2.tex}
 
-
-% \bibliography{thesis} % old natbib command
-% Add bibliography to TOC
 \addcontentsline{toc}{chapter}{\bibname}
 \printbibliography
 
-
 \appendix
 %% Add appendixes to be imported
-\input{chapters/appendixA.tex}
-
-% \annex % not currently using
-%% Add annexes to be imported
-\input{chapters/annexA}
+\import{chapters/}{appendixA.tex}
 \input{chapters/manual-en}
+
+\annex
+%% Add annexes to be imported
+\import{chapters/}{annexA.tex}
 
 \end{document}

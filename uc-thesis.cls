@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2025/09/11 v0.10.2 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2026/09/07 v0.11.0 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -22,9 +22,9 @@
 \newif\if@phd
 \newif\if@thesis
 
-\DeclareOption{msc}{\@msctrue\@phdfalse\@thesisfalse}
-\DeclareOption{phd}{\@mscfalse\@phdtrue\@thesisfalse}
-\DeclareOption{thesis}{\@mscfalse\@phdfalse\@thesistrue}
+\DeclareVoidOption{msc}{\@msctrue\@phdfalse\@thesisfalse}
+\DeclareVoidOption{phd}{\@mscfalse\@phdtrue\@thesisfalse}
+\DeclareVoidOption{thesis}{\@mscfalse\@phdfalse\@thesistrue}
 
 % Faculty Options
 \newif\if@fcdefuc
@@ -42,23 +42,20 @@
     \csname @#1true\endcsname
 }
 
-\DeclareOption{fcdefuc}{\setfaculty{fcdefuc}}
-\DeclareOption{fctuc}{\setfaculty{fctuc}}
-\DeclareOption{fduc}{\setfaculty{fduc}}
-\DeclareOption{feuc}{\setfaculty{feuc}}
-\DeclareOption{ffuc}{\setfaculty{ffuc}}
-\DeclareOption{fluc}{\setfaculty{fluc}}
-\DeclareOption{fmuc}{\setfaculty{fmuc}}
-\DeclareOption{fpceuc}{\setfaculty{fpceuc}}
+\DeclareVoidOption{fcdefuc}{\setfaculty{fcdefuc}}
+\DeclareVoidOption{fctuc}{\setfaculty{fctuc}}
+\DeclareVoidOption{fduc}{\setfaculty{fduc}}
+\DeclareVoidOption{feuc}{\setfaculty{feuc}}
+\DeclareVoidOption{ffuc}{\setfaculty{ffuc}}
+\DeclareVoidOption{fluc}{\setfaculty{fluc}}
+\DeclareVoidOption{fmuc}{\setfaculty{fmuc}}
+\DeclareVoidOption{fpceuc}{\setfaculty{fpceuc}}
 
-% % Handle unspecified options
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{book}}
+% Handle unspecified options
+\DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{book}}
 
 % Process options
 \ProcessKeyvalOptions*
-
-% Process options
-\ProcessOptions\relax
 
 % Assign the processed options to internal commands
 \newcommand{\primarylang}{\ucthesis@main}
@@ -120,7 +117,12 @@
 % \RequirePackage{metalogo} % Provides logos for MetaFont and LaTeX logos
 % \RequirePackage[numbers,sort&compress]{natbib} % Manages bibliography with numeric citations (e.g., [1,2,3])
 % \bibliographystyle{unsrtnat} % Sets bibliography style to numeric and unsorted
-\RequirePackage[backend=biber, style=numeric, sorting=none, natbib=true, maxcitenames = 2]{biblatex}
+\RequirePackage[backend=biber, style=numeric-comp, sorting=none, natbib=true, maxcitenames = 2]{biblatex}
+\RequirePackage{xurl}
+
+\DefineBibliographyStrings{english}{%
+  mathesis = {Master's thesis},
+}
 
 \RequirePackage{xparse}
 \RequirePackage{url} % Provides URL formatting and handling
@@ -290,7 +292,8 @@
 \newcommand{\printsupervisorslines}{%
   \ifnum\@supervisorcount=1
     \csname @supervisortitle\romannumeral1\endcsname~%
-    \csname @supervisorname\romannumeral1\endcsname\\%
+    \csname @supervisorname\romannumeral1\endcsname,~
+    \csname @supervisorposition\romannumeral1\endcsname\\%
   \else
     \@tempcnta=1
     \loop
@@ -402,12 +405,12 @@
     \def\mscdegree{Master}%
     \def\mscdocument{Dissertation}%
     \def\phddegree{Doctor}%    
-    \def\phddocument{Thesis}%
+    \def\phddocument{PhD Thesis}%
     \def\thesisdegree{Doctor}%    
     \def\thesisdocument{Thesis Project}%
     \def\supervisorand{and}%
-    \def\keythesiscover{\@doc\ within the scope of the \@longdegree\ supervised by \printsupervisors, and presented to \@affiliation}%
-    \def\keythesisscope{\@doc\ within the scope of the \@longdegree\ supervised by \@supervisortitle\ \@supervisor}%
+    \def\keythesiscover{\@doc\ in \@longdegree\ supervised by \printsupervisors, and presented to \@affiliation}%
+    \def\keythesisscope{\@doc\ in \@longdegree\ supervised by \@supervisortitle\ \@supervisor}%
     \def\keythesiscosupervisor{and \@cosupervisortitle\ \@cosupervisor,}%
     \def\keythesisaffiliation{and presented to \@affiliation}%
     \def\keythesistitle{Submitted in Partial Fulfilment of the Requirements for the Degree of \@degree\ in \@area}%
@@ -659,37 +662,66 @@
 %% Removes "Chapter" from the header
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
 
+\newcommand*\ucthesis@chaptertocnumber{\thechapter}
+
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+                       \if@mainmatter
+                         \refstepcounter{chapter}%
+                         \typeout{\@chapapp\space\thechapter.}%
+                         \addcontentsline{toc}{chapter}%
+                                   {\protect\numberline{\ucthesis@chaptertocnumber}#1}%
+                       \else
+                         \addcontentsline{toc}{chapter}{#1}%
+                       \fi
+                    \else
+                      \addcontentsline{toc}{chapter}{#1}%
+                    \fi
+                    \chaptermark{#1}%
+                    \addtocontents{lof}{\protect\addvspace{10\p@}}%
+                    \addtocontents{lot}{\protect\addvspace{10\p@}}%
+                    \if@twocolumn
+                      \@topnewpage[\@makechapterhead{#2}]%
+                    \else
+                      \@makechapterhead{#2}%
+                      \@afterheading
+                    \fi}
+
 %% Appendix
-% \renewcommand\appendix{\par
-%     \setcounter{chapter}{0}%
-%     \setcounter{section}{0}%
-%     \renewcommand*{\theHsection}{\thesection}%
-%     \renewcommand*{\theHchapter}{\thechapter}%
-%     \gdef\@chapapp{\appendixname}%
-%     \gdef\thechapter{\@Alph\c@chapter}%
-%     \titleformat{\chapter}
-%     {}% format
-%     {\fontsize{18pt}{20pt}\bfseries \appendixname\ \thechapter.\ }% label
-%     {0pt}% sep
-%     {\fontsize{18pt}{20pt}\bfseries\color{title}}% before
-%     \dottedcontents{chapter}[6.55em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{6.5em}{0pc}%
-%     \dottedcontents{section}[8.35em]{\titlefont}{6.75em}{8pt}%
-% }
+\renewcommand\appendix{\par
+    \setcounter{chapter}{0}%
+    \setcounter{section}{0}%
+    \gdef\@chapapp{\appendixname}%
+    \gdef\thechapter{\@Alph\c@chapter}%
+    \gdef\theHchapter{appendix.\thechapter}%
+    \gdef\theHsection{\theHchapter.\arabic{section}}%
+    \gdef\ucthesis@chaptertocnumber{\appendixname\space\thechapter}%
+    \titleformat{\chapter}
+    {}% format
+    {\fontsize{18pt}{20pt}\bfseries \appendixname\ \thechapter.\ }% label
+    {0pt}% sep
+    {\fontsize{18pt}{20pt}\bfseries\color{title}}% before
+    \dottedcontents{chapter}[6.8em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{6.8em}{0pc}%
+    \dottedcontents{section}[8.2em]{\titlefont}{2.8em}{8pt}%
+    \dottedcontents{subsection}[11em]{\titlefont}{3.2em}{8pt}%
+}
 %% Annex
-% \newcommand\annex{\par
-%     \setcounter{chapter}{0}%
-%     \setcounter{section}{0}%
-%     \renewcommand*{\theHsection}{\thesection}%
-%     \renewcommand*{\theHchapter}{\thechapter}%
-%     \gdef\@chapapp{\annexcaption}%
-%     \gdef\thechapter{\annexcaption\ \@Alph\c@chapter}%
-%     \titleformat{\chapter}
-%     {}% format
-%     {\fontsize{18pt}{20pt}\bfseries \thechapter.\ }% label
-%     {0pt}% sep
-%     {\fontsize{18pt}{20pt}\bfseries\color{title}}% before
-%     \dottedcontents{chapter}[5.05em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{5em}{0pc}
-% }
+\newcommand\annex{\par
+    \setcounter{chapter}{0}%
+    \setcounter{section}{0}%
+    \gdef\@chapapp{\annexcaption}%
+    \gdef\thechapter{\@Alph\c@chapter}%
+    \gdef\theHchapter{annex.\thechapter}%
+    \gdef\theHsection{\theHchapter.\arabic{section}}%
+    \gdef\ucthesis@chaptertocnumber{\annexcaption\space\thechapter}%
+    \titleformat{\chapter}
+    {}% format
+    {\fontsize{18pt}{20pt}\bfseries \annexcaption\ \thechapter.\ }% label
+    {0pt}% sep
+    {\fontsize{18pt}{20pt}\bfseries\color{title}}% before
+    \dottedcontents{chapter}[6.8em]{\vspace{0.5\baselineskip}\titlefont\bfseries}{6.8em}{0pc}%
+    \dottedcontents{section}[8.2em]{\titlefont}{2.8em}{8pt}%
+    \dottedcontents{subsection}[11em]{\titlefont}{3.2em}{8pt}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Cover %%%%%%%%%%%%%%%%%%%%%%
@@ -735,13 +767,79 @@
 %%%%%%%%%%%%%%%%%% Titlepage %%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand*\maketitlepage{%
+% \newcommand*\maketitlepage{%
+%     \clearpage%
+%     \thispagestyle{empty}%
+%     \pdfbookmark{\titlepagecaption}{\titlepagecaption}
+%     \newgeometry{top=2cm,bottom=2cm,inner=3cm,outer=2cm}%
+%     \setlength{\parindent}{0pt}
+%     \includegraphics[width=\textwidth]{\@faculty}\\[2\baselineskip]
+%     \vfill
+%     \fontsize{20pt}{22pt}\selectfont\textbf{\@title}%
+%     \ifx\@subtitle\@empty
+%       % no subtitle
+%     \else
+%       \textbf{: }{\fontsize{18pt}{20pt}\selectfont\@subtitle}%
+%     \fi
+%     \\
+%     \fontsize{12pt}{14pt}\selectfont\keythesistitle
+%     \ifx\@speciality\@empty
+%         % do nothing
+%     \else
+%         \keythesisspeciality
+%     \fi
+%     \\[1.5\baselineskip]
+%     % \fontsize{16pt}{18pt}\selectfont\textbf{\@alttitle}%
+%     % \ifx\@altsubtitle\@empty
+%     %     % do nothing
+%     % \else
+%     %     \textbf{: }{\fontsize{14pt}{16pt}\selectfont\@altsubtitle}%
+%     % \fi
+%     % \\[1\baselineskip]
+%     \fontsize{12pt}{14pt}\selectfont\textbf{\authorcaption}\\
+%     \fontsize{16pt}{18pt}\selectfont\textbf{\@author}\\
+
+%     \fontsize{12pt}{14pt}\selectfont\textbf{\ifnum\@supervisorcount>1\cosupervisorcaption\else\supervisorcaption\fi}\\
+%     {\fontsize{16pt}{18pt}\selectfont\bfseries\printsupervisorslines}
+    
+%     \fontsize{12pt}{14pt}\selectfont\textbf{\jurycaption}
+    
+%     \begin{tblr}[
+%     entry = none,
+%     label = none,
+%     ]{
+%     colspec = { X[m,l] X[5,m,l] },
+%     width = \textwidth,
+%     rowhead = 1,
+%     leftsep = 0pt,
+%     }
+%     \textbf{\presidentcaption} & {\textbf{\@presidenttitle}\ {\fontsize{14pt}{16pt}\textbf{\@president}} \\ \textbf{\@presidentposition}} \\
+%     \textbf{\supervisorcaption} & {\textbf{\@supervisorinjurytitle}\ {\fontsize{14pt}{16pt}\textbf{\@supervisorinjuryname}} \\ \textbf{\@supervisorinjuryposition}} \\
+%     \textbf{\vowelcaption} & {\textbf{\@voweltitle}\ {\fontsize{14pt}{16pt}\textbf{\@vowel}} \\ \textbf{\@vowelposition}}
+%     \end{tblr}
+%     \\[\baselineskip]
+    
+%     \vfill
+%     \printinstitutions
+    
+%     \vfill
+%     \fontsize{14pt}{16pt}\selectfont\textbf{Coimbra, \@month, \@year}
+%     \restoregeometry%
+%     \setlength{\parindent}{1.5em}
+%     \cleardoublepage
+%     \fontsize{12pt}{14pt}\selectfont
+% }
+
+\newcommand*\ucthesis@makemsctitlepage{%
     \clearpage%
     \thispagestyle{empty}%
-    \pdfbookmark{\titlepagecaption}{\titlepagecaption}
+    \pdfbookmark{\titlepagecaption}{\titlepagecaption}%
     \newgeometry{top=2cm,bottom=2cm,inner=3cm,outer=2cm}%
-    \setlength{\parindent}{0pt}
-    \includegraphics[width=\textwidth]{\@faculty}\\[2\baselineskip]
+    \setlength{\parindent}{0pt}%
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{\@faculty}
+    \end{center}
+    \vspace{0.75\baselineskip}
     \vfill
     \fontsize{20pt}{22pt}\selectfont\textbf{\@title}%
     \ifx\@subtitle\@empty
@@ -791,11 +889,90 @@
     \printinstitutions
     
     \vfill
-    \fontsize{14pt}{16pt}\selectfont\textbf{Coimbra, \@month, \@year}
+    \fontsize{14pt}{16pt}\selectfont\textbf{\monthyear}
     \restoregeometry%
-    \setlength{\parindent}{1.5em}
+    \setlength{\parindent}{1.5em}%
     \cleardoublepage
     \fontsize{12pt}{14pt}\selectfont
+}
+
+\newcommand*\ucthesis@makephdtitlepage{%
+    \clearpage%
+    \thispagestyle{empty}%
+    \pdfbookmark{\titlepagecaption}{\titlepagecaption}%
+    \newgeometry{top=2.2cm,bottom=2.2cm,inner=3cm,outer=2cm}%
+    \setlength{\parindent}{0pt}%
+    \begin{center}
+
+    % Header / logo
+    \includegraphics[width=0.7\textwidth]{\@faculty}
+
+    \vspace{1.2cm}
+
+    % Optional faculty / department line
+    {\fontsize{14pt}{16pt}\selectfont
+    Faculty of Sciences and Technology of the University of Coimbra\par}
+
+    \vfill
+
+    % Title
+    {\fontsize{22pt}{26pt}\selectfont\bfseries \@title\par}
+
+    \ifx\@subtitle\@empty
+    \else
+        \vspace{0.35cm}
+        {\fontsize{15pt}{18pt}\selectfont \@subtitle\par}
+    \fi
+
+    \vspace{2.0cm}
+
+    % Author
+    {\fontsize{17pt}{20pt}\selectfont \@author\par}
+
+    \vspace{1.8cm}
+
+    % Submission statement
+    {\fontsize{13pt}{16pt}\selectfont
+    \keythesistitle\par}
+
+    % Optional speciality line, if you still want it
+    \ifx\@speciality\@empty
+    \else
+        \vspace{0.3cm}
+        {\fontsize{13pt}{16pt}\selectfont \@speciality\par}
+    \fi
+
+    \vfill
+
+    % Supervisors
+    {\fontsize{13pt}{16pt}\selectfont\bfseries
+    \ifnum\@supervisorcount>1\cosupervisorcaption\else\supervisorcaption\fi\par}
+
+    \vspace{0.45cm}
+
+    {\fontsize{13.5pt}{16pt}\selectfont
+    \printsupervisorslines\par}
+
+    \vfill
+
+    % Date
+    {\fontsize{14pt}{16pt}\selectfont\bfseries
+    \monthyear\par}
+
+    \end{center}
+
+    \restoregeometry%
+    \setlength{\parindent}{1.5em}%
+    \cleardoublepage%
+    \fontsize{12pt}{14pt}\selectfont
+}
+
+\newcommand*\maketitlepage{%
+    \if@msc
+        \ucthesis@makemsctitlepage
+    \else
+        \ucthesis@makephdtitlepage
+    \fi
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -847,7 +1024,9 @@
 }
 %% Print the abstract
 \newcommand*\langabstract[3]{%
-    \begin{otherlanguage}{#1}
+    \begingroup
+    \edef\ucthesis@abstractlanguage{#1}%
+    \expandafter\selectlanguage\expandafter{\ucthesis@abstractlanguage}%
         \chapter*{\abstractname}
         \label{cha:\abstractname}
         \addcontentsline{toc}{chapter}{\nameref{cha:\abstractname}}
@@ -856,7 +1035,7 @@
         \vspace{\baselineskip}
         
         \noindent\textbf{\keywordscaption: } #3%
-    \end{otherlanguage}
+    \endgroup
 }
 
 \newcommand*\makeabstract{%
@@ -888,15 +1067,15 @@
 \newcommand{\nomunit}[1]{\renewcommand{\nomentryend}{\hspace*{\fill}#1}}
 \newcommand\Nomenclature[3][X]{\nomenclature[#1#3]{#2}{#3}}
 
-% \renewcommand\nomgroup[1]{%
-%  \item[\large\bfseries
-%   \ifstrequal{#1}{Z}{Acronyms}{%
-%   \ifstrequal{#1}{A}{}{%
-%   \ifstrequal{#1}{G}{Greek Symbols}{%
-%   \ifstrequal{#1}{S}{Superscripts}{% 
-%   \ifstrequal{#1}{U}{Subscripts}{%   
-%   \ifstrequal{#1}{X}{Other Symbols}{}}}}}}]%
-%  }
+\renewcommand\nomgroup[1]{%
+ \item[\large\bfseries
+  \ifstrequal{#1}{Z}{Acronyms}{%
+  \ifstrequal{#1}{A}{}{%
+  \ifstrequal{#1}{G}{Greek Symbols}{%
+  \ifstrequal{#1}{S}{Superscripts}{% 
+  \ifstrequal{#1}{U}{Subscripts}{%   
+  \ifstrequal{#1}{X}{Other Symbols}{}}}}}}]%
+ }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%% Thesis Structure %%%%%%%%%%%%%%%%%
