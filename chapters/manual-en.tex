@@ -58,11 +58,14 @@ By default the command will print the required front matter according to the doc
 \begin{verbatim}
     \makefrontmatter
 \end{verbatim}
-It is possible to customize which lists are printed by declaring them:
+It is possible to customize which front matter pages and lists are printed by declaring them:
 \begin{verbatim}
-    \makefrontmatter[lists=figures,tables,acronyms,nomenclature]
+    \makefrontmatter[
+        pages=dedication,acknowledgement,statement,
+        lists=figures,tables,acronyms,nomenclature
+    ]
 \end{verbatim}
-Undeclared lists will not be printed.
+Undeclared pages or lists will not be printed. If \texttt{pages=} is omitted, the dedication, acknowledgements, and artificial intelligence statement are printed by default. If \texttt{lists=} is omitted, all lists are printed by default.
 
 \subsection{Managing the Body of the Thesis}
 After printing the front matter, we introduce the main matter with \verb|\mainmatter|. After if you will import the contents of the body using the commands \verb|\import| or \verb|\input|.
@@ -163,6 +166,12 @@ Dedication and acknowledgement are straightforward:
     \acknowledgement{Write your acknowledgements here}
 \end{verbatim}
 
+The artificial intelligence statement is generated automatically with:
+\begin{verbatim}
+    \makestatement
+\end{verbatim}
+It is included by default in \verb|\makefrontmatter| after the acknowledgements.
+
 The abstract and keywords have two components. The first for the main language, and the second for the alt language.
 \begin{verbatim}
     \thesisabstract{Abstract in Main Language}{and in Secondary Language}
@@ -170,6 +179,18 @@ The abstract and keywords have two components. The first for the main language, 
 \end{verbatim}
 
 \section{Changelog}
+\subsection{Version 0.12.0}
+\begin{itemize}
+\item \textbf{Added artificial intelligence statement page:}\\
+Introduced \verb|\makestatement| with translated statement text for the supported languages. The page is included by default in \verb|\makefrontmatter| after acknowledgements and starts on an odd page.
+
+\item \textbf{Added optional front matter pages:}\\
+Dedication, acknowledgements, and the artificial intelligence statement can now be selected through the \texttt{pages=} option of \verb|\makefrontmatter|.
+
+\item \textbf{Added list configuration support:}\\
+Added \texttt{enumitem} to the package list to provide finer control over list environments and spacing.
+\end{itemize}
+
 \subsection{Version 0.11.0}
 \begin{itemize}
 \item \textbf{Fixed package option handling:}\\

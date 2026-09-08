@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{uc-thesis}[2026/09/07 v0.11.0 University of Coimbra LaTeX Thesis Class]
+\ProvidesClass{uc-thesis}[2026/09/08 v0.12.0 University of Coimbra LaTeX Thesis Class]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%% Options %%%%%%%%%%%%%%%%%%%%
@@ -149,6 +149,7 @@
 \RequirePackage{caption} % Allows customization of captions for figures and tables, including formatting and placement options.
 \RequirePackage{subcaption} % Enables the creation of subfigures and subtables, allowing for labeled and referenced sub-entities within a main figure or table.
 \RequirePackage[casesstyle]{cases} % Provides a way to format piecewise functions with cases, using the 'casesstyle' option for neat formatting.
+\RequirePackage{enumitem} % Provides fine control over list environments, spacing, labels, and indentation.
 
 \captionsetup{justification=centering} % Centers the captions for figures and tables, providing a more uniform appearance.
 
@@ -400,6 +401,7 @@
     \def\presidentcaption{President}%
     \def\supervisorcaption{Supervisor}%
     \def\cosupervisorcaption{Supervisors}%
+    \def\statementcaption{Statement on the Use of Artificial Intelligence Tools}%
     \def\titlepagecaption{Title Page}%
     \def\vowelcaption{Vowel}%
     \def\mscdegree{Master}%
@@ -415,6 +417,7 @@
     \def\keythesisaffiliation{and presented to \@affiliation}%
     \def\keythesistitle{Submitted in Partial Fulfilment of the Requirements for the Degree of \@degree\ in \@area}%
     \def\keythesisspeciality{\ in the speciality of \@speciality}%
+    \def\keystatement{This document was reviewed and refined with the assistance of Large Language Models, such as ChatGPT, or similar tools, which helped check grammar, correct typos, and enhance clarity. Any Artificial Intelligence-generated text or content is clearly indicated within the document and is used only to a limited extent. The overall content and ideas remain solely the responsibility of the author.}%
     \def\monthyear{\@month\ of \@year}%
 }
 
@@ -432,6 +435,7 @@
     \def\presidentcaption{Presidente}%
     \def\supervisorcaption{Orientador}%
     \def\cosupervisorcaption{Orientadores}%
+    \def\statementcaption{Declaração sobre a Utilização de Ferramentas de Inteligência Artificial}%
     \def\titlepagecaption{Página de Título}%
     \def\vowelcaption{Vogal}%
     \def\mscdegree{Mestre}%
@@ -447,6 +451,7 @@
     \def\keythesisaffiliation{e apresentada \@affiliation}%
     \def\keythesistitle{\@doc\ apresentada para a obtenção do grau de \@degree\ em \@area}%
     \def\keythesisspeciality{\ na Especialidade de \@speciality}%
+    \def\keystatement{Este documento foi revisto e aperfeiçoado com o apoio de Modelos de Linguagem de Grande Escala, como o ChatGPT, ou ferramentas semelhantes, que auxiliaram na verificação gramatical, correção de gralhas e melhoria da clareza. Qualquer texto ou conteúdo gerado por Inteligência Artificial encontra-se claramente assinalado no documento e foi utilizado apenas de forma limitada. O conteúdo global e as ideias apresentadas permanecem exclusivamente da responsabilidade do autor.}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -464,6 +469,7 @@
     \def\presidentcaption{Presidente}%
     \def\supervisorcaption{Supervisor}%
     \def\cosupervisorcaption{Supervisores}%
+    \def\statementcaption{Declaración sobre el Uso de Herramientas de Inteligencia Artificial}%
     \def\titlepagecaption{Página de Título}%
     \def\vowelcaption{Vocal}%
     \def\mscdegree{Máster}%
@@ -479,6 +485,7 @@
     \def\keythesisaffiliation{y presentada a \@affiliation}%
     \def\keythesistitle{Presentada para la obtención del título de \@degree\ en \@area}%
     \def\keythesisspeciality{\ en la especialidad de \@speciality}%
+    \def\keystatement{Este documento fue revisado y perfeccionado con la ayuda de Modelos de Lenguaje de Gran Escala, como ChatGPT, o herramientas similares, que ayudaron a comprobar la gramática, corregir errores tipográficos y mejorar la claridad. Cualquier texto o contenido generado por Inteligencia Artificial está claramente indicado en el documento y se utilizó solo de forma limitada. El contenido general y las ideas siguen siendo responsabilidad exclusiva del autor.}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -496,6 +503,7 @@
     \def\presidentcaption{Président}%
     \def\supervisorcaption{Directeur}%
     \def\cosupervisorcaption{Directeurs}%
+    \def\statementcaption{Déclaration sur l'Utilisation d'Outils d'Intelligence Artificielle}%
     \def\titlepagecaption{Page de Titre}%
     \def\vowelcaption{Membre du Jury}%
     \def\mscdegree{Master}%
@@ -511,6 +519,7 @@
     \def\keythesisaffiliation{et présenté à \@affiliation}%
     \def\keythesistitle{Soumis en vue de l’obtention du diplôme de \@degree\ en \@area}%
     \def\keythesisspeciality{\ dans la spécialité de \@speciality}%
+    \def\keystatement{Ce document a été relu et amélioré avec l'aide de grands modèles de langage, tels que ChatGPT, ou d'outils similaires, qui ont contribué à vérifier la grammaire, corriger les coquilles et améliorer la clarté. Tout texte ou contenu généré par Intelligence Artificielle est clairement indiqué dans le document et n'a été utilisé que de manière limitée. Le contenu global et les idées demeurent sous la seule responsabilité de l'auteur.}%
     \def\monthyear{\@month\ de \@year}%
 }
 
@@ -1009,6 +1018,26 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Statement %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*\makestatement{%
+    \cleardoublepage%
+    \thispagestyle{empty}%
+    \pdfbookmark{\statementcaption}{\statementcaption}%
+    \mbox{}%
+    \vfill
+    \begin{center}
+        \begin{minipage}{0.76\textwidth}
+            \centering
+            {\titlefont\bfseries\scshape\statementcaption\par}
+            \vspace{\baselineskip}
+            {\fontsize{9pt}{11pt}\selectfont\bfseries\keystatement\par}
+        \end{minipage}
+    \end{center}
+    \cleardoublepage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%% Abstract %%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Define the abstract in two languages
@@ -1082,13 +1111,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ExplSyntaxOn
 % Logical flags
+\newif\if@includededication
+\newif\if@includeacknowledgement
+\newif\if@includestatement
 \newif\if@includeloft
 \newif\if@includelott
 \newif\if@includeacro
 \newif\if@includenomen
 
-% Fallback to include all
-\newcommand*\setallfrontmatterflags{%
+% Fallback to include all optional pages
+\newcommand*\setallfrontmatterpageflags{%
+  \@includededicationtrue
+  \@includeacknowledgementtrue
+  \@includestatementtrue
+}
+
+% Fallback to include all optional lists
+\newcommand*\setallfrontmatterlistflags{%
   \@includelofttrue
   \@includelotttrue
   \@includeacrotrue
@@ -1097,27 +1136,43 @@
 
 \NewDocumentCommand{\makefrontmatter}{O{lists=all}}{%
   % Reset all flags
+  \@includededicationfalse
+  \@includeacknowledgementfalse
+  \@includestatementfalse
   \@includeloftfalse
   \@includelottfalse
   \@includeacrofalse
   \@includenomenfalse
 
   % Parse user options
-  \str_if_eq:nnTF {#1} {lists=all} {
-    \setallfrontmatterflags
+  \tl_if_in:nnTF {#1} {pages=} {
+    \tl_if_in:nnT {#1} {pages=all}         { \setallfrontmatterpageflags }
+    \tl_if_in:nnT {#1} {dedication}        { \@includededicationtrue }
+    \tl_if_in:nnT {#1} {acknowledgement}   { \@includeacknowledgementtrue }
+    \tl_if_in:nnT {#1} {acknowledgment}    { \@includeacknowledgementtrue }
+    \tl_if_in:nnT {#1} {statement}         { \@includestatementtrue }
   } {
-    \tl_if_in:nnT {#1} {figures}      { \@includelofttrue }
-    \tl_if_in:nnT {#1} {tables}       { \@includelotttrue }
-    \tl_if_in:nnT {#1} {acronyms}     { \@includeacrotrue }
-    \tl_if_in:nnT {#1} {nomenclature} { \@includenomentrue }
+    \setallfrontmatterpageflags
+  }
+  \tl_if_in:nnTF {#1} {lists=} {
+    \tl_if_in:nnT {#1} {lists=all}         { \setallfrontmatterlistflags }
+    \tl_if_in:nnT {#1} {figures}           { \@includelofttrue }
+    \tl_if_in:nnT {#1} {tables}            { \@includelotttrue }
+    \tl_if_in:nnT {#1} {acronyms}          { \@includeacrotrue }
+    \tl_if_in:nnT {#1} {nomenclature}      { \@includenomentrue }
+  } {
+    \setallfrontmatterlistflags
   }
 
   % Print front matter
   \frontmatter
   \makecover
   \maketitlepage
-  \if@thesis\else\makededication\fi
-  \if@thesis\else\makeacknowledgement\fi
+  \if@thesis\else
+    \if@includededication\makededication\fi
+    \if@includeacknowledgement\makeacknowledgement\fi
+  \fi
+  \if@includestatement\makestatement\fi
   \makeabstract
   \tableofcontents
   \cleardoublepage

@@ -15,7 +15,7 @@
 *.out
 thesis.pdf
 thesis-titlepage-*.png
-thesis-toc-page-*.png
+thesis-*-page-*.png
 *.run.xml
 *.synctex.gz
 *.toc
